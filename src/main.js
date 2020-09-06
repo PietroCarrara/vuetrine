@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import tmdb from './tmdb';
+import router from './router'
 
 Vue.config.productionTip = false;
 
@@ -12,6 +13,7 @@ new Vue({
             showDetails: {},
         }
     },
+    router,
     methods: {
         getMovieDetails(id) {
             if (typeof this.movieDetails[id] === 'object') {
@@ -49,5 +51,5 @@ new Vue({
 
             return this.showDetails[id];
         },
-    },
+    }
 }).$mount('#app');
