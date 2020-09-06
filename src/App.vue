@@ -1,28 +1,26 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+    <div id="app">
+        <HorizontalScroll class="py-2">
+            <MovieThumb class="mx-2" :movieID="15" />
+            <MovieThumb class="mx-2" :movieID="16" />
+            <MovieThumb class="mx-2" :movieID="17" />
+            <MovieThumb class="mx-2" :movieID="18" />
+            <MovieThumb class="mx-2" :movieID="19" />
+            <MovieThumb class="mx-2" :movieID="20" />
+            <MovieThumb class="mx-2" :movieID="21" />
+        </HorizontalScroll>
+    </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import MovieThumb from "./components/MovieThumb.vue";
+import HorizontalScroll from "./components/HorizontalScroll.vue";
 
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+    name: "App",
+    components: {
+        MovieThumb,
+        HorizontalScroll,
+    },
+};
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
