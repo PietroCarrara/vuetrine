@@ -1,26 +1,28 @@
 <template>
-    <div class="movie-thumb rounded">
+    <MiniCard>
         <LoadingSpinner v-if="movieDetails.loading"></LoadingSpinner>
         <div v-else>
             <img :src="poster"
                 class="movie-thumb-img rounded-top"
             />
-            <div class="card-body">
+            <div class="p-3">
                 <h5 class="text-truncate">{{ movieDetails.title }}</h5>
                 <h6 class="text-muted">{{ movieDetails.release_date | date | year }}</h6>
             </div>
         </div>
-    </div>
+    </MiniCard>
 </template>
 
 <script>
 import LoadingSpinner from "./LoadingSpinner.vue";
 import tmdb from '../tmdb.js';
+import MiniCard from './MiniCard.vue';
 
 export default {
     name: "MovieThumb",
     components: {
         LoadingSpinner,
+        MiniCard,
     },
     props: {
         movieID: {
@@ -54,12 +56,6 @@ export default {
 </script>
 
 <style>
-.movie-thumb {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.75);
-    border: 0;
-    width: 200px;
-    height: 400px;
-}
 .movie-thumb-img {
     object-fit: cover;
     max-width: 100%;

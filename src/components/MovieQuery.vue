@@ -7,19 +7,34 @@
     <div>
         <HorizontalScroll class="py-3">
             <MovieThumb v-for="id of ids" :key="id" :movieID="id" class="mx-2" />
+
+            <MiniCard v-if="next != null" class="mx-2 text-center">
+                <a v-on:click="loadNext()" class="btn btn-primary" style="margin-top: 150px;" role="button">
+                    Load More
+                </a>
+            </MiniCard>
+
+            <MiniCard v-if="loading" class="mx-2">
+                <LoadingSpinner />
+            </MiniCard>
         </HorizontalScroll>
     </div>
 </template>
 
 <script>
 import HorizontalScroll from "./HorizontalScroll.vue";
+import LoadingSpinner from './LoadingSpinner.vue';
+import MiniCard from './MiniCard.vue';
 import MovieThumb from './MovieThumb.vue';
+
 
 export default {
     name: 'MovieQuery',
     components: {
         HorizontalScroll,
         MovieThumb,
+        MiniCard,
+        LoadingSpinner,
     },
     props: {
         query: {
@@ -30,18 +45,21 @@ export default {
     data() {
         return {
             ids: [],
+            loading: true,
             next: null, // Function to load the next page of movies
         };
     },
     methods: {
         loadNext() {
             if (this.next != null) {
+                this.loading = true;
                 this.mountPromise(this.next());
             }
         },
         mountPromise(p) {
+            this.next = null;
             p.then((q) => {
-                console.log(q);
+                this.loading = false;
                 this.ids.push(...q.response.results.map((m) => m.id));
                 this.next = q.next;
             });
