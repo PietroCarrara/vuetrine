@@ -8,7 +8,9 @@
             <p :v-if="movieDetails.tagline != ''" class="text-muted">{{movieDetails.tagline}}</p>
             <p class="text-justify">{{ movieDetails.overview }}</p>
             <div class="text-right">
-                <IMDBLink v-if="movieDetails.imdb_id" :id="movieDetails.imdb_id"/>
+                <YoutubeLink v-if="trailer" class="mx-1" :id="trailer" text="Trailer"/>
+                <TMDBLink class="mx-1" :id="movieDetails.id"/>
+                <IMDBLink v-if="movieDetails.imdb_id" class="mx-1" :id="movieDetails.imdb_id"/>
             </div>
             <hr/>
             <div>
@@ -24,12 +26,17 @@ import tmdb from '../tmdb';
 import IMDBLink from './IMDBLink.vue';
 import MediaQuery from './MediaQuery.vue';
 import MovieThumb from './MovieThumb.vue';
+import TMDBLink from './TMDBLink.vue';
+import YoutubeLink from './YoutubeLink.vue';
+
 
 export default {
     name: 'MovieInfo',
     components: {
         IMDBLink,
         MediaQuery,
+        YoutubeLink,
+        TMDBLink,
     },
     props: {
         id: {
@@ -41,6 +48,7 @@ export default {
         return {
             movieDetails: this.$root.getMovieDetails(this.id),
             related: null,
+            trailer: '',
             MovieThumb,
         };
     },
@@ -48,6 +56,7 @@ export default {
         id(id) {
             this.movieDetails = this.$root.getMovieDetails(id);
             this.related = this.getRecommended(id);
+            this.updateTrailer(id);
         },
     },
     computed: {
@@ -79,9 +88,25 @@ export default {
                 }
             });
         },
+        updateTrailer(id) {
+            this.trailer = '';
+            tmdb.movie.getVideos(id).then(r => {
+                var res = null;
+                for (var video of r.results) {
+                    if (video.site.toLowerCase() == 'youtube') {
+                        if (res == null || (res.type != 'Trailer' && video.type == 'Trailer')) {
+                            res = video;
+                        }
+                    }
+                }
+                res = res || {};
+                this.trailer = res.key || '';
+            });
+        },
     },
     mounted() {
         this.related = this.getRecommended(this.id);
+        this.updateTrailer(this.id);
     }
 }
 </script>

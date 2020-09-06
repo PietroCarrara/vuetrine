@@ -1,6 +1,12 @@
 <template>
-    <a class="btn btn-primary btn-imdb" :href="`https://www.imdb.com/title/${id}`" target="_blank">
+    <a
+        class="btn btn-imdb"
+        role="button"
+        :href="`https://www.imdb.com/title/${id}`"
+        target="_blank"
+    >
         IMDb
+        <i class="zmdi zmdi-movie-alt"></i>
     </a>
 </template>
 
