@@ -3,9 +3,10 @@
         <LoadingSpinner v-if="loading"></LoadingSpinner>
         <div v-else>
             <div style="height: 300px">
-                <img :src="poster"
+                <img v-if="poster" :src="poster"
                     class="media-thumb-img rounded-top"
                 />
+                <h4 v-else class="text-center pt-4">No Poster.</h4>
             </div>
             <div class="p-3 text-center">
                 <h5 class="text-truncate">{{ title }}</h5>

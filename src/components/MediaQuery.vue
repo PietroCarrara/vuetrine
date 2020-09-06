@@ -18,7 +18,10 @@
                 <LoadingSpinner />
             </MiniCard>
 
-            <div style="width: 0.5rem">
+            <div v-if="!loading && ids.length <= 0 && next == null" class="w-100 text-center">
+                We weren't able to find anything.
+            </div>
+            <div v-else style="width: 0.5rem">
 
             </div>
         </HorizontalScroll>
@@ -59,6 +62,14 @@ export default {
             loading: true,
             next: null, // Function to load the next page of movies
         };
+    },
+    watch: {
+        query(query) {
+            this.ids = [];
+            this.loading = true;
+            this.next = true;
+            this.mountPromise(query);
+        }
     },
     methods: {
         loadNext() {

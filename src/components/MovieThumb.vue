@@ -1,20 +1,22 @@
 <template>
     <div>
-        <MediaThumb
-            :loading="movieDetails.loading"
-            :poster="poster"
-            :title="movieDetails.title"
-            :subtitle="year"
-        />
+        <router-link :to="`/movie/${id}`" class="text-decoration-none" style="color: inherit">
+            <MediaThumb
+                :loading="movieDetails.loading"
+                :poster="poster"
+                :title="movieDetails.title"
+                :subtitle="year"
+            />
+        </router-link>
     </div>
 </template>
 
 <script>
-import tmdb from "../tmdb.js";
-import MediaThumb from "./MediaThumb.vue";
+import tmdb from '../tmdb.js';
+import MediaThumb from './MediaThumb.vue';
 
 export default {
-    name: "MovieThumb",
+    name: 'MovieThumb',
     components: {
         MediaThumb,
     },
@@ -31,18 +33,18 @@ export default {
     },
     computed: {
         poster() {
-            if (this.movieDetails.loading) {
-                return "";
+            if (this.movieDetails.loading || !this.movieDetails.poster_path) {
+                return '';
             }
 
             return tmdb.common.getImageUrl(
                 this.movieDetails.poster_path,
-                "w500"
+                'w500'
             );
         },
         year() {
-            if (this.movieDetails.loading) {
-                return "";
+            if (this.movieDetails.loading || !this.movieDetails.release_date) {
+                return '';
             }
 
             return new Date(this.movieDetails.release_date).getFullYear();

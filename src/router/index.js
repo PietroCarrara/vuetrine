@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import PopularMedia from '../components/PopularMedia.vue'
+import MovieInfo from '../components/MovieInfo.vue'
 
 Vue.use(VueRouter)
 
@@ -9,6 +10,11 @@ const routes = [
         path: '/',
         name: 'Home',
         component: PopularMedia
+    },
+    {
+        path: '/movie/:id',
+        component: MovieInfo,
+        props: route => ({id: Number(route.params.id)}),
     },
 ]
 

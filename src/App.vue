@@ -1,9 +1,9 @@
 <template>
     <div id="app">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="#">
+            <router-link to="/" class="navbar-brand">
                 <span class="vt">V</span>ue<span class="vt">T</span>rine
-            </a>
+            </router-link>
             <button
                 class="navbar-toggler"
                 type="button"
@@ -35,7 +35,7 @@
                 </form>
             </div>
         </nav>
-        <div class="container">
+        <div class="container py-4">
             <router-view />
         </div>
     </div>
@@ -44,5 +44,11 @@
 <style scoped>
 .vt {
     color: #41b883;
+}
+</style>
+
+<style>
+.lifted {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.75);
 }
 </style>

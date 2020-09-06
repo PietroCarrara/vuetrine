@@ -1,11 +1,13 @@
 <template>
     <div>
-        <MediaThumb
-            :loading="showDetails.loading"
-            :poster="poster"
-            :title="showDetails.name"
-            :subtitle="year"
-        />
+        <router-link :to="`/show/${id}`" class="text-decoration-none" style="color: inherit">
+            <MediaThumb
+                :loading="showDetails.loading"
+                :poster="poster"
+                :title="showDetails.name"
+                :subtitle="year"
+            />
+        </router-link>
     </div>
 </template>
 

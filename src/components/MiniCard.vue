@@ -1,5 +1,5 @@
 <template>
-    <div class="rounded mini-card">
+    <div class="rounded lifted mini-card">
         <slot />
     </div>
 </template>
@@ -12,7 +12,6 @@ export default {
 
 <style>
 .mini-card {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.75);
     border: 0;
     width: 200px;
     height: 400px;
