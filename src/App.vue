@@ -1,22 +1,16 @@
 <template>
     <div id="app">
-        <MovieQuery :query="this.getPopular()" />
+        <PopularMedia />
     </div>
 </template>
 
 <script>
-import MovieQuery from './components/MovieQuery.vue';
-import tmdb from './tmdb';
+import PopularMedia from './components/PopularMedia.vue';
 
 export default {
     name: "App",
     components: {
-        MovieQuery,
+        PopularMedia,
     },
-    methods: {
-        getPopular() {
-            return tmdb.movie.getPopular();
-        }
-    }
 };
 </script>

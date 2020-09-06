@@ -6,7 +6,7 @@
 <template>
     <div>
         <HorizontalScroll class="py-3">
-            <MovieThumb v-for="id of ids" :key="id" :movieID="id" class="mx-2" />
+            <component v-bind:is="component" v-for="id of ids" :key="id" :id="id" class="mx-2" />
 
             <MiniCard v-if="next != null" class="mx-2 text-center">
                 <a v-on:click="loadNext()" class="btn btn-primary" style="margin-top: 150px;" role="button">
@@ -26,10 +26,11 @@ import HorizontalScroll from "./HorizontalScroll.vue";
 import LoadingSpinner from './LoadingSpinner.vue';
 import MiniCard from './MiniCard.vue';
 import MovieThumb from './MovieThumb.vue';
+import ShowThumb from './ShowThumb.vue';
 
 
 export default {
-    name: 'MovieQuery',
+    name: 'MediaQuery',
     components: {
         HorizontalScroll,
         MovieThumb,
@@ -41,6 +42,12 @@ export default {
             type: Promise,
             required: true,
         },
+        component: {
+            require: true,
+            validator(value) {
+                return value == ShowThumb || value == MovieThumb;
+            }
+        }
     },
     data() {
         return {

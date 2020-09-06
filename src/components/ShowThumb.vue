@@ -1,20 +1,20 @@
 <template>
     <div>
         <MediaThumb
-            :loading="movieDetails.loading"
+            :loading="showDetails.loading"
             :poster="poster"
-            :title="movieDetails.title"
+            :title="showDetails.name"
             :subtitle="year"
         />
     </div>
 </template>
 
 <script>
-import tmdb from "../tmdb.js";
-import MediaThumb from "./MediaThumb.vue";
+import tmdb from '../tmdb.js';
+import MediaThumb from './MediaThumb.vue';
 
 export default {
-    name: "MovieThumb",
+    name: 'ShowThumb',
     components: {
         MediaThumb,
     },
@@ -26,26 +26,26 @@ export default {
     },
     data() {
         return {
-            movieDetails: this.$root.getMovieDetails(this.id),
+            showDetails: this.$root.getShowDetails(this.id),
         };
     },
     computed: {
         poster() {
-            if (this.movieDetails.loading) {
-                return "";
+            if (this.showDetails.loading) {
+                return '';
             }
 
             return tmdb.common.getImageUrl(
-                this.movieDetails.poster_path,
-                "w500"
+                this.showDetails.poster_path,
+                'w500'
             );
         },
         year() {
-            if (this.movieDetails.loading) {
-                return "";
+            if (this.showDetails.loading) {
+                return '';
             }
 
-            return new Date(this.movieDetails.release_date).getFullYear();
+            return new Date(this.showDetails.first_air_date).getFullYear();
         },
     },
 };
