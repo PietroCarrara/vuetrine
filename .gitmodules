@@ -1,0 +1,3 @@
+[submodule "src/tmdb"]
+	path = src/tmdb
+	url = https://github.com/PietroCarrara/tmdb.js.git
