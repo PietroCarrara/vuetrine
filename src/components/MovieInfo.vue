@@ -47,7 +47,7 @@ export default {
     watch: {
         id(id) {
             this.movieDetails = this.$root.getMovieDetails(id);
-            this.related = tmdb.movie.getRecommended(id);
+            this.related = this.getRecommended(id);
         },
     },
     computed: {
@@ -69,8 +69,19 @@ export default {
             return new Date(this.movieDetails.release_date).getFullYear();
         },
     },
+    methods: {
+        getRecommended(id) {
+            return tmdb.movie.getRecommended(id).then(r => {
+                if (r.response.results.length <= 0) {
+                    return tmdb.movie.getSimilar(id);
+                } else {
+                    return r;
+                }
+            });
+        },
+    },
     mounted() {
-        this.related = tmdb.movie.getRecommended(this.id);
+        this.related = this.getRecommended(this.id);
     }
 }
 </script>
