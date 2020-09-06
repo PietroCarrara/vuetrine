@@ -2,10 +2,12 @@
     <MiniCard>
         <LoadingSpinner v-if="loading"></LoadingSpinner>
         <div v-else>
-            <img :src="poster"
-                class="media-thumb-img rounded-top"
-            />
-            <div class="p-3">
+            <div style="height: 300px">
+                <img :src="poster"
+                    class="media-thumb-img rounded-top"
+                />
+            </div>
+            <div class="p-3 text-center">
                 <h5 class="text-truncate">{{ title }}</h5>
                 <h6 class="text-muted">{{ subtitle }}</h6>
             </div>
@@ -46,7 +48,7 @@ export default {
 <style>
 .media-thumb-img {
     object-fit: cover;
-    max-width: 100%;
-    max-height: 100%;
+    width: 100%;
+    height: 100%;
 }
 </style>

@@ -17,6 +17,10 @@
             <MiniCard v-if="loading" class="mx-2">
                 <LoadingSpinner />
             </MiniCard>
+
+            <div style="width: 0.5rem">
+
+            </div>
         </HorizontalScroll>
     </div>
 </template>

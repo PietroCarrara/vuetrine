@@ -1,8 +1,8 @@
 <template>
     <div>
-        <h3 class="py-2">Popular Movies</h3>
+        <h3 class="py-2 text-center">Popular Movies</h3>
         <MediaQuery :query="popularMovies()" :component="MovieThumb"/>
-        <h3 class="py-2">Popular Shows</h3>
+        <h3 class="py-2 text-center">Popular Shows</h3>
         <MediaQuery :query="popularShows()" :component="ShowThumb"/>
     </div>
 </template>
