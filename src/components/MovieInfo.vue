@@ -6,7 +6,7 @@
         <div class="col-12 col-md-8">
             <h1>
                 {{ movieDetails.title }}
-                <span class="text-muted">({{ year }})</span>
+                <span v-if="year" class="text-muted">({{ year }})</span>
             </h1>
             <p :v-if="movieDetails.tagline != ''" class="text-muted">{{movieDetails.tagline}}</p>
             <p class="text-justify">{{ movieDetails.overview }}</p>
@@ -25,7 +25,6 @@
 </template>
 
 <script>
-import tmdb from '../tmdb';
 import IMDBLink from './IMDBLink.vue';
 import MediaQuery from './MediaQuery.vue';
 import MovieThumb from './MovieThumb.vue';
@@ -64,7 +63,7 @@ export default {
                 return '';
             }
 
-            return tmdb.common.getImageUrl(
+            return this.$root.getImageUrl(
                 this.movieDetails.poster_path,
                 'w500'
             );
@@ -77,9 +76,9 @@ export default {
             return new Date(this.movieDetails.release_date).getFullYear();
         },
         related() {
-            return tmdb.movie.getRecommended(this.movieDetails.id).then(r => {
+            return this.$root.getRecommendedMovies(this.movieDetails.id).then(r => {
                 if (r.response.results.length <= 0) {
-                    return tmdb.movie.getSimilar(this.movieDetails.id);
+                    return this.$root.getSimilarMovies(this.movieDetails.id);
                 } else {
                     return r;
                 }
@@ -89,7 +88,7 @@ export default {
     asyncComputed: {
         trailer: {
             async get() {
-                return tmdb.movie.getVideos(this.movieDetails.id).then(r => {
+                return this.$root.getMovieVideos(this.movieDetails.id).then(r => {
                     var res = null;
                     for (var video of r.results) {
                         if (video.site.toLowerCase() == 'youtube') {

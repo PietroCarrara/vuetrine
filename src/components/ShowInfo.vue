@@ -40,7 +40,6 @@
 </template>
 
 <script>
-import tmdb from '../tmdb';
 import HorizontalScroll from './HorizontalScroll.vue';
 import IMDBLink from './IMDBLink.vue';
 import MediaQuery from './MediaQuery.vue';
@@ -83,7 +82,7 @@ export default {
                 return '';
             }
 
-            return tmdb.common.getImageUrl(
+            return this.$root.getImageUrl(
                 this.showDetails.poster_path,
                 'w500'
             );
@@ -96,9 +95,9 @@ export default {
             return new Date(this.showDetails.first_air_date).getFullYear();
         },
         related() {
-            return tmdb.tv.getRecommended(this.showDetails.id).then(r => {
+            return this.$root.getRecommendedShows(this.showDetails.id).then(r => {
                 if (r.response.results.length <= 0) {
-                    return tmdb.movie.getSimilar(this.showDetails.id);
+                    return this.$root.getSimilarShows(this.showDetails.id);
                 } else {
                     return r;
                 }
@@ -114,11 +113,11 @@ export default {
     },
     asyncComputed: {
         async imdbID() {
-            return (await tmdb.tv.getExternalIDs(this.showDetails.id)).imdb_id;
+            return (await this.$root.getExternalShowIDs(this.showDetails.id)).imdb_id;
         },
         trailer: {
             async get() {
-                return tmdb.tv.getVideos(this.showDetails.id).then(r => {
+                return this.$root.getShowVideos(this.showDetails.id).then(r => {
                     var res = null;
                     for (var video of r.results) {
                         if (video.site.toLowerCase() == 'youtube') {

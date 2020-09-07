@@ -8,7 +8,6 @@
 </template>
 
 <script>
-import tmdb from '../tmdb';
 import MediaQuery from "./MediaQuery.vue";
 import MovieThumb from './MovieThumb.vue';
 import ShowThumb from './ShowThumb.vue';
@@ -53,7 +52,7 @@ export default {
                 opts.year = y;
             }
 
-            return tmdb.search.movie(q, 1, opts);
+            return this.$root.searchMovies(q, 1, opts);
         },
         searchShows(q, y) {
             var opts = {};
@@ -62,7 +61,7 @@ export default {
                 opts.firstAirDateYear = y;
             }
 
-            return tmdb.search.tv(q, 1, opts);
+            return this.$root.searchShows(q, 1, opts);
         },
     },
     filters: {

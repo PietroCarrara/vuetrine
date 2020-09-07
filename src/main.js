@@ -1,12 +1,14 @@
 import Vue from 'vue'
 import App from './App.vue'
-import tmdb from './tmdb';
 import router from './router'
 import AsyncComputed from 'vue-async-computed'
+import TheMovieDB from './tmdb/tmdb.js';
 
 Vue.config.productionTip = false;
 
 Vue.use(AsyncComputed);
+
+var tmdb = new TheMovieDB(process.env.TMDB_KEY);
 
 new Vue({
     render: h => h(App),
@@ -19,6 +21,43 @@ new Vue({
     },
     router,
     methods: {
+        // TODO: Use query results to fill the details cache
+        getImageUrl(relative, size) {
+            return tmdb.common.getImageUrl(relative, size);
+        },
+        getRecommendedMovies(id) {
+            return tmdb.movie.getRecommended(id);
+        },
+        getRecommendedShows(id) {
+            return tmdb.tv.getRecommended(id);
+        },
+        getSimilarMovies(id) {
+            return tmdb.movie.getSimilar(id);
+        },
+        getSimilarShows(id) {
+            return tmdb.tv.getSimilar(id);
+        },
+        getMovieVideos(id) {
+            return tmdb.movie.getVideos(id);
+        },
+        getShowVideos(id) {
+            return tmdb.tv.getVideos(id);
+        },
+        getPopularMovies() {
+            return tmdb.movie.getPopular();
+        },
+        getPopularShows() {
+            return tmdb.tv.getPopular();
+        },
+        searchMovies(name, page, opts) {
+            return tmdb.search.movie(name, page, opts);
+        },
+        searchShows(name, page, opts) {
+            return tmdb.search.tv(name, page, opts);
+        },
+        getExternalShowIDs(id) {
+            return tmdb.tv.getExternalIDs(id);
+        },
         getMovieDetails(id) {
             if (typeof this.movieDetails[id] === 'object') {
                 return this.movieDetails[id];

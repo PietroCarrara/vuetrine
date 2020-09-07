@@ -5,7 +5,6 @@
 </template>
 
 <script>
-import tmdb from '../tmdb'
 import MediaThumb from './MediaThumb.vue';
 
 export default {
@@ -25,7 +24,7 @@ export default {
     },
     computed: {
         poster() {
-            return tmdb.common.getImageUrl(this.season.poster_path, 'w500');
+            return this.$root.getImageUrl(this.season.poster_path, 'w500');
         },
         year() {
             return new Date(this.season.air_date).getFullYear();

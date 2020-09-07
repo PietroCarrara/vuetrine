@@ -8,7 +8,6 @@
 </template>
 
 <script>
-import tmdb from '../tmdb';
 import MediaQuery from "./MediaQuery.vue";
 import MovieThumb from './MovieThumb.vue';
 import ShowThumb from './ShowThumb.vue';
@@ -20,10 +19,10 @@ export default {
     },
     methods: {
         popularMovies() {
-            return tmdb.movie.getPopular();
+            return this.$root.getPopularMovies();
         },
         popularShows() {
-            return tmdb.tv.getPopular();
+            return this.$root.getPopularShows();
         },
     },
     data() {

@@ -12,7 +12,6 @@
 </template>
 
 <script>
-import tmdb from '../tmdb.js';
 import MediaThumb from './MediaThumb.vue';
 
 export default {
@@ -37,7 +36,7 @@ export default {
                 return '';
             }
 
-            return tmdb.common.getImageUrl(
+            return this.$root.getImageUrl(
                 this.showDetails.poster_path,
                 'w500'
             );

@@ -31,7 +31,6 @@
 </template>
 
 <script>
-import tmdb from '../tmdb';
 import EpisodeCard from './EpisodeCard.vue';
 import IMDBLink from './IMDBLink.vue';
 import MediaQuery from './MediaQuery.vue';
@@ -78,7 +77,7 @@ export default {
                 return '';
             }
 
-            return tmdb.common.getImageUrl(
+            return this.$root.getImageUrl(
                 this.seasonDetails.poster_path,
                 'w500'
             );

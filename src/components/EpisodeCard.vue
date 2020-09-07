@@ -26,7 +26,6 @@
 </template>
 
 <script>
-import tmdb from '../tmdb'
 export default {
     name: 'EpisodeCard',
     props: {
@@ -45,7 +44,7 @@ export default {
                 return '';
             }
 
-            return tmdb.common.getImageUrl(this.episode.still_path, 'w500');
+            return this.$root.getImageUrl(this.episode.still_path, 'w500');
         },
         date() {
             if (!this.dateObj) {
