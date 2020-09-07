@@ -14,6 +14,7 @@ new Vue({
         return {
             movieDetails: {},
             showDetails: {},
+            seasonDetails: {},
         }
     },
     router,
@@ -54,5 +55,27 @@ new Vue({
 
             return this.showDetails[id];
         },
+        getSeasonDetails(showID, seasonNumber) {
+            if (typeof this.seasonDetails[showID] === 'undefined') {
+                this.seasonDetails[showID] = {}
+            }
+
+            if (typeof this.seasonDetails[showID][seasonNumber] === 'object') {
+                return this.seasonDetails[showID][seasonNumber];
+            }
+            this.seasonDetails[showID][seasonNumber] = { season_number: seasonNumber, loading: true };
+
+            tmdb.tv.getSeasonDetails(showID, seasonNumber)
+                .then(m => {
+                    // Copy show attributes
+                    for (var k in m) {
+                        this.seasonDetails[showID][seasonNumber][k] = m[k];
+                    }
+
+                    this.seasonDetails[showID][seasonNumber].loading = false;
+                });
+
+            return this.seasonDetails[showID][seasonNumber];
+        }
     }
 }).$mount('#app');

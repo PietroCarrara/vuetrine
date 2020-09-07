@@ -1,5 +1,5 @@
 <template>
-    <router-link :to="`/season/${season.id}`" class="text-decoration-none" style="color: inherit">
+    <router-link :to="`/show/${showid}/season/${season.season_number}`" class="text-decoration-none" style="color: inherit">
         <MediaThumb :poster="poster" :title="season.name" :subtitle="` ${year} - ${season.episode_count} episodes`" />
     </router-link>
 </template>
@@ -14,6 +14,10 @@ export default {
         MediaThumb,
     },
     props: {
+        showid: {
+            type: Number,
+            required: true,
+        },
         season: {
             type: Object,
             required: true,

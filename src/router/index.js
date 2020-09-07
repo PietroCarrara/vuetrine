@@ -3,6 +3,8 @@ import VueRouter from 'vue-router'
 import PopularMedia from '../components/PopularMedia.vue'
 import MovieInfo from '../components/MovieInfo.vue'
 import ShowInfo from '../components/ShowInfo.vue'
+import SeasonInfo from '../components/SeasonInfo.vue'
+
 
 Vue.use(VueRouter)
 
@@ -21,7 +23,12 @@ const routes = [
         path: '/show/:id',
         component: ShowInfo,
         props: route => ({id: Number(route.params.id)}),
-    }
+    },
+    {
+        path: '/show/:showid/season/:seasonnumber',
+        component: SeasonInfo,
+        props: route => ({showID: Number(route.params.showid), seasonNumber: Number(route.params.seasonnumber)}),
+    },
 ]
 
 const router = new VueRouter({

@@ -23,6 +23,7 @@
                         v-for="season of seasons.reverse()"
                         :key="season.id"
                         :season="season"
+                        :showid="showDetails.id"
                         class="mx-2 my-2"
                     />
 
