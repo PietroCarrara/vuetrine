@@ -33,7 +33,7 @@ export default {
     },
     computed: {
         poster() {
-            if (this.showDetails.loading) {
+            if (this.showDetails.loading || !this.showDetails.poster_path) {
                 return '';
             }
 

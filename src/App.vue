@@ -18,20 +18,16 @@
 
             <div class="collapse navbar-collapse" id="main-navbar">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <router-link to="/" class="nav-link" href="#">
-                            Home
-                        </router-link>
-                    </li>
                 </ul>
-                <form class="form-inline my-2 my-lg-0">
+                <form class="form-inline my-2 my-lg-0" v-on:submit.prevent="search(searchName)">
                     <input
+                        v-model="searchName"
                         class="form-control mr-sm-2"
                         type="search"
                         placeholder="Search"
                         aria-label="Search"
                     />
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="">Search</button>
                 </form>
             </div>
         </nav>
@@ -46,6 +42,24 @@
     color: #41b883;
 }
 </style>
+
+<script>
+export default {
+    name: 'App',
+    data() {
+        return {
+            searchName: '',
+        };
+    },
+    methods: {
+        search(name) {
+            if (name) {
+                this.$router.push({path: '/search', query: {q: name}});
+            }
+        },
+    },
+}
+</script>
 
 <style>
 .lifted {
