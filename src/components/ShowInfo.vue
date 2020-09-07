@@ -1,29 +1,49 @@
 <template>
     <div class="row">
         <div class="col-12 col-md-4 pb-4">
-            <img v-if="poster" class="img-fluid rounded lifted" :src="poster"/>
+            <img v-if="poster" class="img-fluid rounded lifted" :src="poster" />
         </div>
         <div class="col-12 col-md-8">
-            <h1>{{ showDetails.name }} <span class="text-muted">({{ year }})</span></h1>
+            <h1>
+                {{ showDetails.name }}
+                <span class="text-muted">({{ year }})</span>
+            </h1>
             <p class="text-justify">{{ showDetails.overview }}</p>
             <div class="text-right">
-                <YoutubeLink v-if="trailer" class="mx-1" :id="trailer" text="Trailer"/>
-                <TMDBLink class="mx-1" type="tv" :id="showDetails.id"/>
-                <IMDBLink v-if="imdbID" class="mx-1" :id="imdbID"/>
+                <YoutubeLink v-if="trailer" class="mx-1" :id="trailer" text="Trailer" />
+                <TMDBLink class="mx-1" type="tv" :id="showDetails.id" />
+                <IMDBLink v-if="imdbID" class="mx-1" :id="imdbID" />
             </div>
-            <hr/>
-            <div>
-                <h5>You might also like:</h5>
-                <MediaQuery v-if="related != null" v-bind:query="related" :component="ShowThumb"/>
+
+            <div class="col-12">
+                <hr />
+                <h4>Seasons:</h4>
+                <HorizontalScroll>
+                    <SeasonThumb
+                        v-for="season of seasons.reverse()"
+                        :key="season.id"
+                        :season="season"
+                        class="mx-2 my-2"
+                    />
+
+                    <div style="width: 0.5rem"></div>
+                </HorizontalScroll>
             </div>
+        </div>
+        <div class="col-12">
+            <hr />
+            <h5>You might also like:</h5>
+            <MediaQuery v-if="related != null" v-bind:query="related" :component="ShowThumb" />
         </div>
     </div>
 </template>
 
 <script>
 import tmdb from '../tmdb';
+import HorizontalScroll from './HorizontalScroll.vue';
 import IMDBLink from './IMDBLink.vue';
 import MediaQuery from './MediaQuery.vue';
+import SeasonThumb from './SeasonThumb.vue';
 import ShowThumb from './ShowThumb.vue';
 import TMDBLink from './TMDBLink.vue';
 import YoutubeLink from './YoutubeLink.vue';
@@ -36,6 +56,8 @@ export default {
         MediaQuery,
         YoutubeLink,
         TMDBLink,
+        SeasonThumb,
+        HorizontalScroll,
     },
     props: {
         id: {
@@ -81,7 +103,13 @@ export default {
                 }
             });
         },
+        seasons() {
+            if (this.showDetails.loading || !this.showDetails.seasons) {
+                return [];
+            }
 
+            return this.showDetails.seasons.sort((a, b) => a.season_number - b.season_number);
+        }
     },
     asyncComputed: {
         async imdbID() {
