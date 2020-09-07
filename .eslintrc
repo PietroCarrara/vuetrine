@@ -1,0 +1,6 @@
+{
+    "extends": ["plugin:vue/base"],
+    "rules": {
+        "vue/no-async-in-computed-properties": "off"
+    }
+}

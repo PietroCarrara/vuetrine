@@ -2,8 +2,11 @@ import Vue from 'vue'
 import App from './App.vue'
 import tmdb from './tmdb';
 import router from './router'
+import AsyncComputed from 'vue-async-computed'
 
 Vue.config.productionTip = false;
+
+Vue.use(AsyncComputed);
 
 new Vue({
     render: h => h(App),
@@ -19,7 +22,7 @@ new Vue({
             if (typeof this.movieDetails[id] === 'object') {
                 return this.movieDetails[id];
             }
-            this.movieDetails[id] = { loading: true };
+            this.movieDetails[id] = { id, loading: true };
 
             tmdb.movie.getDetails(id)
                 .then(m => {
@@ -37,7 +40,7 @@ new Vue({
             if (typeof this.showDetails[id] === 'object') {
                 return this.showDetails[id];
             }
-            this.showDetails[id] = { loading: true };
+            this.showDetails[id] = { id, loading: true };
 
             tmdb.tv.getDetails(id)
                 .then(m => {

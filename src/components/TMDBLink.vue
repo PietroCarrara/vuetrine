@@ -2,7 +2,7 @@
     <a
         class="btn btn-tmdb"
         role="button"
-        :href="`https://www.themoviedb.org/movie/${id}`"
+        :href="`https://www.themoviedb.org/${type}/${id}`"
         target="_blank"
     >
         <span class="tmdb">
@@ -16,6 +16,11 @@
 export default {
     name: 'TMDBLink',
     props: {
+        type: {
+            type: String,
+            required: true,
+            validator: (v) => ['movie', 'tv'].includes(v),
+        },
         id: {
             type: Number,
             required: true,
