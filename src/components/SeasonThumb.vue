@@ -1,6 +1,6 @@
 <template>
     <router-link :to="`/show/${showid}/season/${season.season_number}`" class="text-decoration-none" style="color: inherit">
-        <MediaThumb :poster="poster" :title="season.name" :subtitle="` ${year} - ${season.episode_count} episodes`" />
+        <MediaThumb :poster="poster" :title="season.name" :subtitle="`${year ? year + ' - ': ''}${season.episode_count} episodes`" />
     </router-link>
 </template>
 
@@ -24,9 +24,17 @@ export default {
     },
     computed: {
         poster() {
+            if (!this.season.poster_path) {
+                return '';
+            }
+
             return this.$root.getImageUrl(this.season.poster_path, 'w500');
         },
         year() {
+            if (!this.season.air_date) {
+                return '';
+            }
+
             return new Date(this.season.air_date).getFullYear();
         }
     }
