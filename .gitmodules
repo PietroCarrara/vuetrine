@@ -1,3 +1,6 @@
 [submodule "src/tmdb"]
 	path = src/tmdb
 	url = https://github.com/PietroCarrara/tmdb.js.git
+[submodule "src/providers/yts/yts.js"]
+	path = src/providers/yts/yts.js
+	url = git@github.com:PietroCarrara/yts.js.git
