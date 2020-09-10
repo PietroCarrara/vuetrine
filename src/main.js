@@ -5,13 +5,14 @@ import AsyncComputed from 'vue-async-computed'
 import TheMovieDB from './tmdb/tmdb.js'
 import { YTSProvider } from './providers/yts/provider'
 import { MediaInfo, TorrentMagnet } from './providers/provider'
+import LinkClient from './clients/link/client'
+import { DownloadInfo } from './clients/client'
 
 Vue.config.productionTip = false;
 
 Vue.use(AsyncComputed);
 
 const tmdb = new TheMovieDB(process.env.TMDB_KEY);
-const yts = new YTSProvider();
 
 /**
  * Select the best torrent.
@@ -49,7 +50,8 @@ new Vue({
             movieDetails: {},
             showDetails: {},
             seasonDetails: {},
-            provider: yts,
+            provider: new YTSProvider(),
+            client: new LinkClient(),
         };
     },
     router,
@@ -110,9 +112,12 @@ new Vue({
          *
          * @param {TorrentMagnet} magnet
          */
-        downloadMagnet(magnet) {
-            // TODO: Add a client interface
-            document.location.replace(magnet.link);
+        downloadMovieMagnet(magnet, movie) {
+            var info = new DownloadInfo(movie.id, 'movie');
+            this.client.downloadMagnet(magnet.link, info);
+        },
+        downloadShowMagnet(magnet, show, season, episode, isFullSeason) {
+            // TODO: implement
         },
         getMovieDetails(id) {
             if (typeof this.movieDetails[id] === 'object') {

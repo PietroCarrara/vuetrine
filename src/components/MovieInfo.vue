@@ -32,7 +32,7 @@
                         >We couldn't find any torrents.</div>
                         <a
                             v-else-if="bestMagnet != null"
-                            v-on:click="$root.downloadMagnet(bestMagnet)"
+                            v-on:click="$root.downloadMovieMagnet(bestMagnet, movieDetails)"
                             class="btn btn-block btn-success font-weight-bold"
                         >
                             {{ bestMagnet.size | size }}
@@ -66,7 +66,7 @@
                             <a
                                 role="button"
                                 class="btn btn-success badge mr-1"
-                                v-on:click="$root.downloadMagnet(torrent)"
+                                v-on:click="$root.downloadMovieMagnet(torrent, movieDetails)"
                             >
                                 <i class="zmdi zmdi-download"></i>
                             </a>

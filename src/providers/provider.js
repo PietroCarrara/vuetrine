@@ -20,7 +20,7 @@ class TorrentMagnet {
 /**
  * Information on some type of media, such as type (tv show, movie...),
  * name, episode, season...
- * ALL of the fiels may be null, so one must check before using anything
+ * ALL of the fields may be null, so one must check before using anything
  */
 class MediaInfo {
     /**
