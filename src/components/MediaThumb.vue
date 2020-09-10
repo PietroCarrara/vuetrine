@@ -1,6 +1,6 @@
 <template>
     <MiniCard>
-        <LoadingSpinner v-if="loading"></LoadingSpinner>
+        <LoadingSpinner v-if="loading" style="padding-top: 150px"></LoadingSpinner>
         <div v-else>
             <div style="height: 300px">
                 <img v-if="poster" :src="poster"

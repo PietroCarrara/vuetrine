@@ -15,7 +15,7 @@
             </MiniCard>
 
             <MiniCard v-if="loading" class="mx-2">
-                <LoadingSpinner />
+                <LoadingSpinner style="padding-top: 150px" />
             </MiniCard>
 
             <div v-if="!loading && ids.length <= 0 && next == null" class="w-100 text-center">

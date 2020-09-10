@@ -10,10 +10,29 @@
             </h1>
             <p :v-if="movieDetails.tagline != ''" class="text-muted">{{movieDetails.tagline}}</p>
             <p class="text-justify">{{ movieDetails.overview }}</p>
-            <div class="text-right">
-                <YoutubeLink v-if="trailer" class="mx-1" :id="trailer" text="Trailer" />
-                <TMDBLink class="mx-1" type="movie" :id="movieDetails.id" />
-                <IMDBLink v-if="movieDetails.imdb_id" class="mx-1" :id="movieDetails.imdb_id" />
+            <div class="row">
+                <div class="col-12 col-lg-6 mt-3">
+                    <YoutubeLink v-if="trailer" class="mx-1" :id="trailer" text="Trailer" />
+                    <TMDBLink class="mx-1" type="movie" :id="movieDetails.id" />
+                    <IMDBLink v-if="movieDetails.imdb_id" class="mx-1" :id="movieDetails.imdb_id" />
+                </div>
+                <div class="col-12 col-lg-6 mt-3 text-center">
+                    <div v-if="torrents == null" class="font-weight-bold">
+                        Searching torrents...
+                        <LoadingSpinner class="mt-1" />
+                    </div>
+                    <div v-else-if="torrents.length <= 0" class="font-weight-bold">
+                        We couldn't find any torrents.
+                    </div>
+                    <a
+                        v-else-if="bestMagnet != null"
+                        v-on:click="$root.downloadMagnet(bestMagnet)"
+                        class="btn btn-block btn-success font-weight-bold"
+                    >
+                        {{ bestMagnet.size | size }}
+                        <i class="zmdi zmdi-download"></i>
+                    </a>
+                </div>
             </div>
             <hr />
             <div>
@@ -26,11 +45,11 @@
 
 <script>
 import IMDBLink from './IMDBLink.vue';
+import LoadingSpinner from './LoadingSpinner.vue';
 import MediaQuery from './MediaQuery.vue';
 import MovieThumb from './MovieThumb.vue';
 import TMDBLink from './TMDBLink.vue';
 import YoutubeLink from './YoutubeLink.vue';
-
 
 export default {
     name: 'MovieInfo',
@@ -39,6 +58,7 @@ export default {
         MediaQuery,
         YoutubeLink,
         TMDBLink,
+        LoadingSpinner,
     },
     props: {
         id: {
@@ -49,12 +69,18 @@ export default {
     data() {
         return {
             movieDetails: this.$root.getMovieDetails(this.id),
+            torrents: null,
+            nextTorrentPage: null,
             MovieThumb,
         };
     },
     watch: {
         id(id) {
             this.movieDetails = this.$root.getMovieDetails(id);
+            this.reloadTorrents();
+        },
+        'movieDetails.loading': function () {
+            this.reloadTorrents();
         },
     },
     computed: {
@@ -84,6 +110,13 @@ export default {
                 }
             });
         },
+        bestMagnet() {
+            if (this.torrents == null) {
+                return null;
+            }
+
+            return this.$root.bestMagnet(this.torrents);
+        }
     },
     asyncComputed: {
         trailer: {
@@ -102,7 +135,29 @@ export default {
                 });
             },
             default: '',
-        }
+        },
     },
+    filters: {
+        size(size) {
+            var i = Math.floor(Math.log(size) / Math.log(1024));
+            return (size / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
+        },
+    },
+    mounted() {
+        this.reloadTorrents();
+    },
+    methods: {
+        reloadTorrents() {
+            this.torrents = null;
+            if (this.movieDetails.loading) {
+                return;
+            }
+
+            this.$root.getMovieTorrents(this.movieDetails).then(r => {
+                this.torrents = r.response;
+                this.nextTorrentPage = r.next;
+            });
+        }
+    }
 }
 </script>

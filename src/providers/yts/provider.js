@@ -23,8 +23,6 @@ export class YTSProvider extends Provider {
      * @returns {PagedResponse<[]String>} PagedResponce of array of magnet links, in no particular order
      */
     async getMagnets(info, page = 1) {
-        console.log(info, page);
-
         var query = '';
 
         if (info.imdb) {

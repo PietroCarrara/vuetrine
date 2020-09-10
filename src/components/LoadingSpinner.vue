@@ -12,9 +12,10 @@ export default {
 
 <style>
 .main {
-    width: 100%;
-    height: 100%;
-    padding: calc(50% - 40px);
+    /* width: 100%;
+    height: 100%; */
+    /* padding: calc(50% - 40px); */
+    text-align: center;
 }
 .lds-dual-ring {
     display: inline-block;
