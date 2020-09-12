@@ -5,8 +5,8 @@ import AsyncComputed from 'vue-async-computed'
 import TheMovieDB from './tmdb/tmdb.js'
 import { YTSProvider } from './providers/yts/provider'
 import { MediaInfo, TorrentMagnet } from './providers/provider'
-import LinkClient from './clients/link/client'
 import { DownloadInfo } from './clients/client'
+import { clients } from './clients/clients';
 
 Vue.config.productionTip = false;
 
@@ -51,7 +51,7 @@ new Vue({
             showDetails: {},
             seasonDetails: {},
             provider: new YTSProvider(),
-            client: new LinkClient(),
+            client: new clients['transmission'](),
         };
     },
     router,

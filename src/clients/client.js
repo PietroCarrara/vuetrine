@@ -1,18 +1,19 @@
-import LinkClient from './link/client'
-
-const clients = {
-    'link': LinkClient,
-}
-
 class Download {
     /**
      * @param {DownloadInfo} info Metadata about this download
-      * @param {Number} completion Download completion in range [0, 1]
-      * @param {Number} size Download size in bytes
-      * @param {*} id A unique identifier, used to refer to this download on actions
-      */
-    constructor(info, completion, size, id) {
+     * @param {'paused'|'downloading'|'completed'} status Current download status
+     * @param {Number} completion Download completion in range [0, 1]
+     * @param {Number} size Download size in bytes
+     * @param {'paused'|'downloading'|'completed'} status
+     * @param {*} id A unique identifier, used to refer to this download on actions
+     */
+    constructor(info, status, completion, size, id) {
         this.info = info;
+
+        this.status = status;
+        this.completion = completion;
+        this.size = size;
+        this.id = id;
     }
 }
 
@@ -57,7 +58,7 @@ class Client {
     }
 
     /**
-     * Adds a torrent to the download quere
+     * Adds a torrent to the download queue
      * @param {String} magnet A magnet link
      * @param {DownloadInfo} info Metadata about the download
      */
@@ -89,5 +90,4 @@ export {
     Client,
     Download,
     DownloadInfo,
-    clients,
 }
