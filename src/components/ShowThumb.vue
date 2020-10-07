@@ -36,10 +36,7 @@ export default {
                 return '';
             }
 
-            return this.$root.getImageUrl(
-                this.showDetails.poster_path,
-                'w500'
-            );
+            return this.$root.tmdb.common.getImageUrl(this.showDetails.poster_path, 'w500');
         },
         year() {
             if (this.showDetails.loading) {

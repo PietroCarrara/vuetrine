@@ -28,7 +28,7 @@ export default {
                 return '';
             }
 
-            return this.$root.getImageUrl(this.season.poster_path, 'w500');
+            return this.$root.tmdb.common.getImageUrl(this.season.poster_path, 'w500');
         },
         year() {
             if (!this.season.air_date) {

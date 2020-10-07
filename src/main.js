@@ -58,9 +58,6 @@ new Vue({
     router,
     methods: {
         // TODO: Expose tmdb, client and provider. For tmdb, just create a proxy that caches queries
-        getImageUrl(relative, size) {
-            return this.tmdb.common.getImageUrl(relative, size);
-        },
         getRecommendedShows(id) {
             return this.tmdb.tv.getRecommended(id);
         },

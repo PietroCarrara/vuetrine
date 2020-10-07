@@ -106,10 +106,7 @@ export default {
                 return '';
             }
 
-            return this.$root.getImageUrl(
-                this.movieDetails.data.poster_path,
-                'w500'
-            );
+            return this.$root.tmdb.common.getImageUrl(this.movieDetails.data.poster_path, 'w500');
         },
         year() {
             if (this.movieDetails.loading || !this.movieDetails.data.release_date) {

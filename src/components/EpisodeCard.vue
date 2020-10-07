@@ -44,7 +44,7 @@ export default {
                 return '';
             }
 
-            return this.$root.getImageUrl(this.episode.still_path, 'w500');
+            return this.$root.tmdb.common.getImageUrl(this.episode.still_path, 'w500');
         },
         date() {
             if (!this.dateObj) {

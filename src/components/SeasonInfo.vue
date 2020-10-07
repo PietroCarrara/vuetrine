@@ -77,10 +77,7 @@ export default {
                 return '';
             }
 
-            return this.$root.getImageUrl(
-                this.seasonDetails.poster_path,
-                'w500'
-            );
+            return this.$root.tmdb.common.getImageUrl(this.seasonDetails.poster_path, 'w500');
         },
         year() {
             if (this.seasonDetails.loading || !this.seasonDetails.air_date) {
