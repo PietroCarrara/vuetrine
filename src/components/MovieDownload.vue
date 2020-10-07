@@ -11,7 +11,7 @@
                 </router-link>
                 <div class="p-3">
                     <div class="text-center text-truncate h5">
-                        {{ movieDetails.title }}
+                        {{ movieDetails.data.title }}
                     </div>
                     <div>
                         <span class="text-muted h6">{{ year }}</span>
@@ -86,10 +86,12 @@ export default {
     },
     data() {
         return {
-            movieDetails: this.$root.getMovieDetails(this.download.info.tmdb),
+            movieDetails: {
+                loading: true,
+                data: null,
+            },
         };
     },
-
     methods: {
         toggleStatus(download) {
             this.$emit('toggle-status', download);
@@ -100,22 +102,29 @@ export default {
     },
     computed: {
         poster() {
-            if (this.movieDetails.loading || !this.movieDetails.poster_path) {
+            if (this.movieDetails.loading || !this.movieDetails.data.poster_path) {
                 return '';
             }
 
             return this.$root.getImageUrl(
-                this.movieDetails.poster_path,
+                this.movieDetails.data.poster_path,
                 'w500'
             );
         },
         year() {
-            if (this.movieDetails.loading || !this.movieDetails.release_date) {
+            if (this.movieDetails.loading || !this.movieDetails.data.release_date) {
                 return '';
             }
 
-            return new Date(this.movieDetails.release_date).getFullYear();
+            return new Date(this.movieDetails.data.release_date).getFullYear();
         },
     },
+    mounted() {
+        this.$root.tmdb.movie.getSimpleDetails(this.download.info.tmdb)
+        .then(m => {
+            this.movieDetails.data = m;
+            this.movieDetails.loading = false;
+        });
+    }
 };
 </script>

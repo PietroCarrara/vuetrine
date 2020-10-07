@@ -52,7 +52,7 @@ export default {
                 opts.year = y;
             }
 
-            return this.$root.searchMovies(q, 1, opts);
+            return this.$root.tmdb.search.movie(q, 1, opts);
         },
         searchShows(q, y) {
             var opts = {};

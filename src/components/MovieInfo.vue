@@ -1,24 +1,42 @@
 <template>
-    <div>
+    <div v-if="movieDetails.loading">
+        <LoadingSpinner />
+    </div>
+    <div v-else>
         <div class="row">
             <div class="col-12 col-md-4 pb-4">
-                <img v-if="poster" class="img-fluid rounded lifted" :src="poster" />
+                <img
+                    v-if="poster"
+                    class="img-fluid rounded lifted"
+                    :src="poster"
+                />
             </div>
             <div class="col-12 col-md-8">
                 <h1>
-                    {{ movieDetails.title }}
+                    {{ movieDetails.data.title }}
                     <span v-if="year" class="text-muted">({{ year }})</span>
                 </h1>
-                <p :v-if="movieDetails.tagline != ''" class="text-muted">{{movieDetails.tagline}}</p>
-                <p class="text-justify">{{ movieDetails.overview }}</p>
+                <p :v-if="movieDetails.data.tagline != ''" class="text-muted">
+                    {{ movieDetails.data.tagline }}
+                </p>
+                <p class="text-justify">{{ movieDetails.data.overview }}</p>
                 <div class="row">
                     <div class="col-12 col-lg-6 mt-3">
-                        <YoutubeLink v-if="trailer" class="mx-1" :id="trailer" text="Trailer" />
-                        <TMDBLink class="mx-1" type="movie" :id="movieDetails.id" />
-                        <IMDBLink
-                            v-if="movieDetails.imdb_id"
+                        <YoutubeLink
+                            v-if="trailer"
                             class="mx-1"
-                            :id="movieDetails.imdb_id"
+                            :id="trailer"
+                            text="Trailer"
+                        />
+                        <TMDBLink
+                            class="mx-1"
+                            type="movie"
+                            :id="movieDetails.data.id"
+                        />
+                        <IMDBLink
+                            v-if="movieDetails.data.imdb_id"
+                            class="mx-1"
+                            :id="movieDetails.data.imdb_id"
                         />
                     </div>
                     <div class="col-12 col-lg-6 mt-3 text-center">
@@ -29,10 +47,14 @@
                         <div
                             v-else-if="torrents.length <= 0"
                             class="font-weight-bold"
-                        >We couldn't find any torrents.</div>
+                        >
+                            We couldn't find any torrents.
+                        </div>
                         <a
                             v-else-if="bestMagnet != null"
-                            v-on:click="downloadTorrent(bestMagnet, movieDetails)"
+                            v-on:click="
+                                downloadTorrent(bestMagnet, movieDetails.data)
+                            "
                             class="btn btn-block btn-success font-weight-bold"
                         >
                             {{ bestMagnet.size | size }}
@@ -66,13 +88,18 @@
                             <a
                                 role="button"
                                 class="btn btn-success badge mr-1"
-                                v-on:click="downloadTorrent(torrent, movieDetails)"
+                                v-on:click="
+                                    downloadTorrent(torrent, movieDetails.data)
+                                "
                             >
                                 <i class="zmdi zmdi-download"></i>
                             </a>
-                            <span class="badge py-1 badge-secondary torrent-info">{{torrent.size | size}}</span>
+                            <span
+                                class="badge py-1 badge-secondary torrent-info"
+                                >{{ torrent.size | size }}</span
+                            >
                         </div>
-                        <div class="text-truncate col">{{torrent.title}}</div>
+                        <div class="text-truncate col">{{ torrent.title }}</div>
                     </div>
                 </div>
             </div>
@@ -82,6 +109,7 @@
 
 <script>
 import { DownloadInfo } from '../clients/client';
+import { MediaInfo } from '../providers/provider';
 import IMDBLink from './IMDBLink.vue';
 import LoadingSpinner from './LoadingSpinner.vue';
 import MediaQuery from './MediaQuery.vue';
@@ -106,43 +134,42 @@ export default {
     },
     data() {
         return {
-            movieDetails: this.$root.getMovieDetails(this.id),
+            movieDetails: {
+                loading: true,
+                data: null,
+            },
             torrents: null,
             nextTorrentPage: null,
             MovieThumb,
         };
     },
     watch: {
-        id(id) {
-            this.movieDetails = this.$root.getMovieDetails(id);
-            this.reloadTorrents();
-        },
-        'movieDetails.loading': function () {
-            this.reloadTorrents();
+        id() {
+            this.loadData();
         },
     },
     computed: {
         poster() {
-            if (this.movieDetails.loading || !this.movieDetails.poster_path) {
+            if (this.movieDetails.loading || !this.movieDetails.data.poster_path) {
                 return '';
             }
 
             return this.$root.getImageUrl(
-                this.movieDetails.poster_path,
+                this.movieDetails.data.poster_path,
                 'w500'
             );
         },
         year() {
-            if (this.movieDetails.loading || !this.movieDetails.release_date) {
+            if (this.movieDetails.loading || !this.movieDetails.data.release_date) {
                 return '';
             }
 
-            return new Date(this.movieDetails.release_date).getFullYear();
+            return new Date(this.movieDetails.data.release_date).getFullYear();
         },
         related() {
-            return this.$root.getRecommendedMovies(this.movieDetails.id).then(r => {
+            return this.$root.tmdb.movie.getRecommended(this.movieDetails.data.id).then(r => {
                 if (r.response.results.length <= 0) {
-                    return this.$root.getSimilarMovies(this.movieDetails.id);
+                    return this.$root.tmdb.movie.getSimilar(this.movieDetails.data.id);
                 } else {
                     return r;
                 }
@@ -158,8 +185,12 @@ export default {
     },
     asyncComputed: {
         trailer: {
-            async get() {
-                return this.$root.getMovieVideos(this.movieDetails.id).then(r => {
+            get() {
+                if (this.movieDetails.loading) {
+                    return;
+                }
+
+                return this.$root.tmdb.movie.getVideos(this.movieDetails.data.id).then(r => {
                     var res = null;
                     for (var video of r.results) {
                         if (video.site.toLowerCase() == 'youtube') {
@@ -176,19 +207,33 @@ export default {
         },
     },
     mounted() {
-        this.reloadTorrents();
+        this.loadData();
     },
     methods: {
+        loadData() {
+            this.movieDetails.loading = true;
+            this.torrents = null;
+
+            this.$root.tmdb.movie.getDetails(this.id)
+                .then(m => {
+                    this.movieDetails.data = m;
+                    this.movieDetails.loading = false;
+                    this.reloadTorrents();
+                })
+        },
         reloadTorrents() {
             this.torrents = null;
             if (this.movieDetails.loading) {
                 return;
             }
 
-            this.$root.getMovieTorrents(this.movieDetails).then(r => {
-                this.torrents = r.response;
-                this.nextTorrentPage = r.next;
-            });
+            this.$root.provider.getMagnets(new MediaInfo({
+                imdb: this.movieDetails.data.imdb_id
+            }))
+                .then(r => {
+                    this.torrents = r.response;
+                    this.nextTorrentPage = r.next;
+                });
         },
         downloadTorrent(torrent, movie) {
             var info = new DownloadInfo(movie.id, 'movie');

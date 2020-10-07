@@ -1,9 +1,3 @@
-import { YTSProvider } from './yts/provider';
-
-const providers = {
-    'yts': YTSProvider,
-};
-
 class TorrentMagnet {
     /**
      * @param {String} title The name of the magnet

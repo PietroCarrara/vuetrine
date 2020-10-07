@@ -2,17 +2,13 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import AsyncComputed from 'vue-async-computed'
-import TheMovieDB from './tmdb/tmdb.js'
-import { YTSProvider } from './providers/yts/provider'
-import { MediaInfo, TorrentMagnet } from './providers/provider'
-import { DownloadInfo } from './clients/client'
+import { TheMovieDBCacheProxy } from './tmdb/tmdbcache.js'
 import { clients } from './clients/clients';
+import providers from './providers/providers'
 
 Vue.config.productionTip = false;
 
 Vue.use(AsyncComputed);
-
-const tmdb = new TheMovieDB(process.env.TMDB_KEY);
 
 /**
  * Select the best torrent.
@@ -52,62 +48,36 @@ new Vue({
     render: h => h(App),
     data: () => {
         return {
-            movieDetails: {},
             showDetails: {},
             seasonDetails: {},
-            provider: new YTSProvider(),
+            provider: new providers['yts'](),
             client: new clients['transmission'](),
+            tmdb: new TheMovieDBCacheProxy(process.env.TMDB_KEY),
         };
     },
     router,
     methods: {
         // TODO: Expose tmdb, client and provider. For tmdb, just create a proxy that caches queries
         getImageUrl(relative, size) {
-            return tmdb.common.getImageUrl(relative, size);
-        },
-        getRecommendedMovies(id) {
-            return tmdb.movie.getRecommended(id);
+            return this.tmdb.common.getImageUrl(relative, size);
         },
         getRecommendedShows(id) {
-            return tmdb.tv.getRecommended(id);
-        },
-        getSimilarMovies(id) {
-            return tmdb.movie.getSimilar(id);
+            return this.tmdb.tv.getRecommended(id);
         },
         getSimilarShows(id) {
-            return tmdb.tv.getSimilar(id);
-        },
-        getMovieVideos(id) {
-            return tmdb.movie.getVideos(id);
+            return this.tmdb.tv.getSimilar(id);
         },
         getShowVideos(id) {
-            return tmdb.tv.getVideos(id);
-        },
-        getPopularMovies() {
-            return tmdb.movie.getPopular();
+            return this.tmdb.tv.getVideos(id);
         },
         getPopularShows() {
-            return tmdb.tv.getPopular();
-        },
-        searchMovies(name, page, opts) {
-            return tmdb.search.movie(name, page, opts);
+            return this.tmdb.tv.getPopular();
         },
         searchShows(name, page, opts) {
-            return tmdb.search.tv(name, page, opts);
+            return this.tmdb.search.tv(name, page, opts);
         },
         getExternalShowIDs(id) {
-            return tmdb.tv.getExternalIDs(id);
-        },
-        /**
-         * Returns a list of magnets of a movie
-         * @param {Object} movie A movie object
-         */
-        getMovieTorrents(movie) {
-            const info = new MediaInfo({
-                imdb: movie.imdb_id,
-            });
-
-            return this.provider.getMagnets(info);
+            return this.tmdb.tv.getExternalIDs(id);
         },
         getShowTorrents(show) {
             // TODO: implement
@@ -117,30 +87,8 @@ new Vue({
          *
          * @param {TorrentMagnet} magnet
          */
-        downloadMovieMagnet(magnet, movie) {
-            var info = new DownloadInfo(movie.id, 'movie');
-            this.client.downloadMagnet(magnet.link, info);
-        },
         downloadShowMagnet(magnet, show, season, episode, isFullSeason) {
             // TODO: implement
-        },
-        getMovieDetails(id) {
-            if (typeof this.movieDetails[id] === 'object') {
-                return this.movieDetails[id];
-            }
-            this.movieDetails[id] = { id, loading: true };
-
-            tmdb.movie.getDetails(id)
-                .then(m => {
-                    // Copy movie attributes
-                    for (var k in m) {
-                        this.movieDetails[id][k] = m[k];
-                    }
-
-                    this.movieDetails[id].loading = false;
-                });
-
-            return this.movieDetails[id];
         },
         getShowDetails(id) {
             if (typeof this.showDetails[id] === 'object') {
@@ -148,7 +96,7 @@ new Vue({
             }
             this.showDetails[id] = { id, loading: true };
 
-            tmdb.tv.getDetails(id)
+            this.tmdb.tv.getDetails(id)
                 .then(m => {
                     // Copy show attributes
                     for (var k in m) {
@@ -170,7 +118,7 @@ new Vue({
             }
             this.seasonDetails[showID][seasonNumber] = { season_number: seasonNumber, loading: true };
 
-            tmdb.tv.getSeasonDetails(showID, seasonNumber)
+            this.tmdb.tv.getSeasonDetails(showID, seasonNumber)
                 .then(m => {
                     // Copy show attributes
                     for (var k in m) {

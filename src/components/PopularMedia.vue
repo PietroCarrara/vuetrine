@@ -19,7 +19,7 @@ export default {
     },
     methods: {
         popularMovies() {
-            return this.$root.getPopularMovies();
+            return this.$root.tmdb.movie.getPopular();
         },
         popularShows() {
             return this.$root.getPopularShows();

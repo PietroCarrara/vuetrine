@@ -1,12 +1,12 @@
 <template>
     <div>
         <router-link :to="`/movie/${id}`" class="text-decoration-none" style="color: inherit">
-            <MediaThumb
-                :loading="movieDetails.loading"
-                :poster="poster"
-                :title="movieDetails.title"
-                :subtitle="year"
-            />
+                <MediaThumb
+                    v-if="!movieDetails.loading"
+                    :poster="poster"
+                    :title="movieDetails.data.title"
+                    :subtitle="year"
+                />
         </router-link>
     </div>
 </template>
@@ -27,27 +27,40 @@ export default {
     },
     data() {
         return {
-            movieDetails: this.$root.getMovieDetails(this.id),
+            movieDetails: {
+                loading: true,
+                data: null,
+            }
         };
     },
     computed: {
         poster() {
-            if (this.movieDetails.loading || !this.movieDetails.poster_path) {
+            if (this.movieDetails.loading || !this.movieDetails.data.poster_path) {
                 return '';
             }
 
             return this.$root.getImageUrl(
-                this.movieDetails.poster_path,
+                this.movieDetails.data.poster_path,
                 'w500'
             );
         },
         year() {
-            if (this.movieDetails.loading || !this.movieDetails.release_date) {
+            if (this.movieDetails.loading || !this.movieDetails.data.release_date) {
                 return '';
             }
 
-            return new Date(this.movieDetails.release_date).getFullYear();
+            return new Date(this.movieDetails.data.release_date).getFullYear();
         },
     },
+    mounted() {
+        this.movieDetails.loading = true;
+        this.movieDetails.data = null;
+
+        this.$root.tmdb.movie.getSimpleDetails(this.id)
+        .then(m => {
+            this.movieDetails.data = m;
+            this.movieDetails.loading = false;
+        });
+    }
 };
 </script>
