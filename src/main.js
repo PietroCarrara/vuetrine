@@ -43,6 +43,11 @@ const bestMagnet = (torrents) => {
     }
 }
 
+Vue.filter('size', size => {
+    var i = Math.floor(Math.log(size) / Math.log(1024));
+    return (size / Math.pow(1024, i)).toFixed(1) + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
+});
+
 new Vue({
     render: h => h(App),
     data: () => {
@@ -56,7 +61,7 @@ new Vue({
     },
     router,
     methods: {
-        // TODO: Use query results to fill the details cache
+        // TODO: Expose tmdb, client and provider. For tmdb, just create a proxy that caches queries
         getImageUrl(relative, size) {
             return tmdb.common.getImageUrl(relative, size);
         },
@@ -177,5 +182,9 @@ new Vue({
 
             return this.seasonDetails[showID][seasonNumber];
         }
+    },
+    mounted() {
+        // TODO: Do this in a proper place
+        this.client.config();
     }
 }).$mount('#app');

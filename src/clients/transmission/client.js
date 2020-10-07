@@ -1,9 +1,16 @@
 import Transmission from './transmission';
 import { Download, Client, DownloadInfo } from '../client';
 
+const torrentFields = [
+    'id',
+    'downloadDir',
+    'totalSize',
+    'percentDone',
+    'status',
+];
+
 class TransmissionClient extends Client {
 
-    // to enable cors: gogo-cors-proxy -target localhost:9091 -listen localhost:9092 -origin http://localhost:8080
     constructor() {
         super();
 
@@ -17,11 +24,44 @@ class TransmissionClient extends Client {
         }
 
         this.transmission = new Transmission(host, Number(port), root);
+
+        this.torrents = {};
+    }
+
+    async config() {
+        // TODO: Check if host is OK
+
+        this.fireUpdate();
+    }
+
+    fireUpdate() {
+        this.updateTorrents()
+            .then(new Promise(r => setTimeout(r, 2 * 1000))
+                .then(() => this.fireUpdate()))
     }
 
     isValid() {
         // For now, we are always valid
         return true;
+    }
+
+    async pauseDownload(id) {
+        return this.transmission.invoke('torrent-stop', {
+            ids: [id],
+        });
+    }
+
+    async resumeDownload(id) {
+        return this.transmission.invoke('torrent-start', {
+            ids: [id],
+        });
+    }
+
+    async removeDownload(id) {
+        return this.transmission.invoke('torrent-remove', {
+            ids: [id],
+            'delete-local-data': true,
+        });
     }
 
     /**
@@ -48,22 +88,18 @@ class TransmissionClient extends Client {
         });
     }
 
+    /**
+     * @returns {{id: Download}} Downloads, keyed by their ID
+     */
     async getDownloads() {
-        var res = [];
+        var res = {};
         await this.checkDownloadDir();
 
         var torrents = await this.transmission.invoke('torrent-get', {
-            fields: [
-                'id',
-                'downloadDir',
-                'totalSize',
-                'percentDone',
-                'status',
-            ],
+            fields: torrentFields,
         });
 
         for (var torrent of torrents.arguments.torrents) {
-            console.log(torrent);
             var parts = torrent.downloadDir.split('/').filter(s => s.length > 0);
             var info = parts.pop();
             var type = parts.pop();
@@ -98,13 +134,8 @@ class TransmissionClient extends Client {
                     break;
             }
 
-            res.push(new Download(
-                metadata,
-                state,
-                torrent.percentDone,
-                torrent.totalSize,
-                torrent.id
-            ));
+            var download = new Download(metadata, state, torrent.percentDone, torrent.totalSize, torrent.id);
+            res[download.id] = download;
         }
 
         return res;
@@ -130,6 +161,31 @@ class TransmissionClient extends Client {
 
         return res.arguments['download-dir'] + '/';
     }
+
+    async updateTorrents() {
+        var downloads = await this.getDownloads();
+
+        for (var id in downloads) {
+            // If this download has been updated
+            if (!this.torrents[id] || !deepEquals(downloads[id], this.torrents[id])) {
+                this.torrents[id] = downloads[id];
+                this.updateDownload(downloads[id]);
+            }
+        }
+
+        for (var id in this.torrents) {
+            // If an old torrent is not among the new ones,
+            // it has been deleted
+            if (!Object.keys(downloads).includes(id)) {
+                this.deleteDownload(this.torrents[id]);
+                delete this.torrents[id];
+            }
+        }
+    }
+}
+
+function deepEquals(a, b) {
+    return JSON.stringify(a) === JSON.stringify(b);
 }
 
 export {

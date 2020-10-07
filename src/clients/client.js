@@ -38,9 +38,19 @@ class DownloadInfo {
 class Client {
     /**
      * Mandatory parameterless constructor
+     * Don't make any heavy lifting (requests, configuration loading...) here.
      */
     constructor() {
         this.updateCallbacks = [];
+        this.deleteCallbacks = [];
+    }
+
+    /**
+     * Do your configuration at this step.
+     * You can make requests and load stuff
+     */
+    async config() {
+
     }
 
     /**
@@ -51,7 +61,7 @@ class Client {
     }
 
     /**
-     * @returns {[DownloadInfo]}
+     * @returns {{id: Download}} Downloads, keyed by their ID
      */
     async getDownloads() {
 
@@ -67,6 +77,30 @@ class Client {
     }
 
     /**
+     * Pauses a download
+     * @param {*} id Download id
+     */
+    async pauseDownload(id) {
+
+    }
+
+    /**
+     * Resumes a download
+     * @param {*} id Download id
+     */
+    async resumeDownload(id) {
+
+    }
+
+    /**
+     * Removes and deletes download data
+     * @param {*} id Download id
+     */
+    async removeDownload(id) {
+
+    }
+
+    /**
      * Should be called by child classes when data is updated on a torrent,
      * INCLUDING when a new torrent is added
      * @param {Download} download The torrent that has been updated
@@ -77,12 +111,38 @@ class Client {
         }
     }
 
+    /**
+     * Should be called by child classes when a torrent is removed
+     * @param {Download} download The torrent that has been deleted
+     */
+    deleteDownload(download) {
+        for (var cb of this.deleteCallbacks) {
+            cb(download);
+        }
+    }
+
     registerUpdateCallback(cb) {
         this.updateCallbacks.push(cb);
     }
 
+    removeUpdateCallback(cb) {
+        this.updateCallbacks = this.updateCallbacks.filter(x => x !== cb);
+    }
+
     clearUpdateCallbacks() {
         this.updateCallbacks = [];
+    }
+
+    registerDeleteCallback(cb) {
+        this.deleteCallbacks.push(cb);
+    }
+
+    removeDeleteCallback(cb) {
+        this.deleteCallbacks = this.deleteCallbacks.filter(x => x !== cb);
+    }
+
+    clearDeleteCallbacks() {
+        this.deleteCallbacks = [];
     }
 }
 

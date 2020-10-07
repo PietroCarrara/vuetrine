@@ -32,7 +32,7 @@
                         >We couldn't find any torrents.</div>
                         <a
                             v-else-if="bestMagnet != null"
-                            v-on:click="$root.downloadMovieMagnet(bestMagnet, movieDetails)"
+                            v-on:click="downloadTorrent(bestMagnet, movieDetails)"
                             class="btn btn-block btn-success font-weight-bold"
                         >
                             {{ bestMagnet.size | size }}
@@ -62,11 +62,11 @@
                         :key="torrent.link"
                         class="row col-12 py-3 striped"
                     >
-                        <div class="">
+                        <div>
                             <a
                                 role="button"
                                 class="btn btn-success badge mr-1"
-                                v-on:click="$root.downloadMovieMagnet(torrent, movieDetails)"
+                                v-on:click="downloadTorrent(torrent, movieDetails)"
                             >
                                 <i class="zmdi zmdi-download"></i>
                             </a>
@@ -81,6 +81,7 @@
 </template>
 
 <script>
+import { DownloadInfo } from '../clients/client';
 import IMDBLink from './IMDBLink.vue';
 import LoadingSpinner from './LoadingSpinner.vue';
 import MediaQuery from './MediaQuery.vue';
@@ -174,12 +175,6 @@ export default {
             default: '',
         },
     },
-    filters: {
-        size(size) {
-            var i = Math.floor(Math.log(size) / Math.log(1024));
-            return (size / Math.pow(1024, i)).toFixed(1) + ' ' + ['B', 'kB', 'MB', 'GB', 'TB'][i];
-        },
-    },
     mounted() {
         this.reloadTorrents();
     },
@@ -194,7 +189,12 @@ export default {
                 this.torrents = r.response;
                 this.nextTorrentPage = r.next;
             });
-        }
+        },
+        downloadTorrent(torrent, movie) {
+            var info = new DownloadInfo(movie.id, 'movie');
+            this.$root.client.downloadMagnet(torrent.link, info);
+            this.$router.push('/downloads');
+        },
     }
 }
 </script>

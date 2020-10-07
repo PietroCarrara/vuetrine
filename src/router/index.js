@@ -5,6 +5,7 @@ import MovieInfo from '../components/MovieInfo.vue'
 import ShowInfo from '../components/ShowInfo.vue'
 import SeasonInfo from '../components/SeasonInfo.vue'
 import SearchMedia from '../components/SearchMedia.vue'
+import DownloadsList from '../components/DownloadsList.vue';
 
 Vue.use(VueRouter)
 
@@ -33,6 +34,10 @@ const routes = [
         path: '/search',
         component: SearchMedia,
         props: route => ({q: route.query.q}),
+    },
+    {
+        path: '/downloads',
+        component: DownloadsList,
     },
 ]
 

@@ -14,9 +14,14 @@ export default {
 .mini-card {
     border: 0;
     width: 200px;
-    height: 400px;
+    min-height: 400px;
 }
 .mini-card-content {
     padding: 1.5rem;
+}
+.mini-card-cover-img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
 }
 </style>

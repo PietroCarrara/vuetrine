@@ -4,7 +4,7 @@
         <div v-else>
             <div style="height: 300px">
                 <img v-if="poster" :src="poster"
-                    class="media-thumb-img rounded-top"
+                    class="mini-card-cover-img rounded-top"
                 />
                 <h4 v-else class="text-center pt-4">No Poster.</h4>
             </div>
@@ -45,11 +45,3 @@ export default {
     }
 }
 </script>
-
-<style>
-.media-thumb-img {
-    object-fit: cover;
-    width: 100%;
-    height: 100%;
-}
-</style>

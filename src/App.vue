@@ -18,6 +18,9 @@
 
             <div class="collapse navbar-collapse" id="main-navbar">
                 <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <router-link to="/downloads" class="nav-link">Downloads</router-link>
+                    </li>
                 </ul>
                 <form class="form-inline my-2 my-lg-0" v-on:submit.prevent="search(searchName)">
                     <input
@@ -27,7 +30,7 @@
                         placeholder="Search"
                         aria-label="Search"
                     />
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="">Search</button>
+                    <button class="btn btn-outline-success my-2 my-sm-0" type>Search</button>
                 </form>
             </div>
         </nav>
@@ -54,7 +57,7 @@ export default {
     methods: {
         search(name) {
             if (name) {
-                this.$router.push({path: '/search', query: {q: name}});
+                this.$router.push({ path: '/search', query: { q: name } });
             }
         },
     },
