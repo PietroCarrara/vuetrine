@@ -163,6 +163,11 @@ class TransmissionClient extends Client {
     }
 
     async updateTorrents() {
+        // Only update if there are people looking!
+        if (this.deleteCallbacks.length <= 0 && this.updateCallbacks.length <= 0) {
+            return
+        }
+
         var downloads = await this.getDownloads();
 
         for (var id in downloads) {
