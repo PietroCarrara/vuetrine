@@ -61,7 +61,7 @@ export default {
                 opts.firstAirDateYear = y;
             }
 
-            return this.$root.searchShows(q, 1, opts);
+            return this.$root.tmdb.search.tv(q, 1, opts);
         },
     },
     filters: {

@@ -42,7 +42,7 @@ export default {
     },
     methods: {
         updateDownload(download) {
-            this.downloads[download.id] = download;
+            Vue.set(this.downloads, download.id, download);
         },
         deleteDownload(download) {
             Vue.delete(this.downloads, download.id);

@@ -22,7 +22,7 @@ export default {
             return this.$root.tmdb.movie.getPopular();
         },
         popularShows() {
-            return this.$root.getPopularShows();
+            return this.$root.tmdb.tv.getPopular();
         },
     },
     data() {

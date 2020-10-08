@@ -92,9 +92,9 @@ export default {
             return new Date(this.showDetails.first_air_date).getFullYear();
         },
         related() {
-            return this.$root.getRecommendedShows(this.showDetails.id).then(r => {
+            return this.$root.tmdb.tv.getRecommended(this.showDetails.id).then(r => {
                 if (r.response.results.length <= 0) {
-                    return this.$root.getSimilarShows(this.showDetails.id);
+                    return this.$root.tmdb.tv.getSimilar(this.showDetails.id);
                 } else {
                     return r;
                 }
@@ -110,11 +110,11 @@ export default {
     },
     asyncComputed: {
         async imdbID() {
-            return (await this.$root.getExternalShowIDs(this.showDetails.id)).imdb_id;
+            return (await this.$root.tmdb.tv.getExternalIDs(this.showDetails.id)).imdb_id;
         },
         trailer: {
             async get() {
-                return this.$root.getShowVideos(this.showDetails.id).then(r => {
+                return this.$root.tmdb.tv.getVideos(this.showDetails.id).then(r => {
                     var res = null;
                     for (var video of r.results) {
                         if (video.site.toLowerCase() == 'youtube') {

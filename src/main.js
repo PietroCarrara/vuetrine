@@ -58,35 +58,11 @@ new Vue({
     router,
     methods: {
         // TODO: Expose tmdb, client and provider. For tmdb, just create a proxy that caches queries
-        getRecommendedShows(id) {
-            return this.tmdb.tv.getRecommended(id);
-        },
-        getSimilarShows(id) {
-            return this.tmdb.tv.getSimilar(id);
-        },
-        getShowVideos(id) {
-            return this.tmdb.tv.getVideos(id);
-        },
-        getPopularShows() {
-            return this.tmdb.tv.getPopular();
-        },
-        searchShows(name, page, opts) {
-            return this.tmdb.search.tv(name, page, opts);
-        },
-        getExternalShowIDs(id) {
-            return this.tmdb.tv.getExternalIDs(id);
-        },
-        getShowTorrents(show) {
-            // TODO: implement
-        },
         bestMagnet,
         /**
          *
          * @param {TorrentMagnet} magnet
          */
-        downloadShowMagnet(magnet, show, season, episode, isFullSeason) {
-            // TODO: implement
-        },
         getShowDetails(id) {
             if (typeof this.showDetails[id] === 'object') {
                 return this.showDetails[id];
