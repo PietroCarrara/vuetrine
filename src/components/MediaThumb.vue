@@ -32,15 +32,10 @@ export default {
             type: Boolean,
             default: false,
         },
-        title: {
-            required: true,
-        },
-        subtitle: {
-            require: true,
-        },
+        title: {},
+        subtitle: {},
         poster: {
             type: String,
-            required: true,
         },
     }
 }

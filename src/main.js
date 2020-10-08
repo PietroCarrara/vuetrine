@@ -48,8 +48,6 @@ new Vue({
     render: h => h(App),
     data: () => {
         return {
-            showDetails: {},
-            seasonDetails: {},
             provider: new providers['yts'](),
             client: new clients['transmission'](),
             tmdb: new TheMovieDBCacheProxy(process.env.TMDB_KEY),
@@ -57,52 +55,7 @@ new Vue({
     },
     router,
     methods: {
-        // TODO: Expose tmdb, client and provider. For tmdb, just create a proxy that caches queries
         bestMagnet,
-        /**
-         *
-         * @param {TorrentMagnet} magnet
-         */
-        getShowDetails(id) {
-            if (typeof this.showDetails[id] === 'object') {
-                return this.showDetails[id];
-            }
-            this.showDetails[id] = { id, loading: true };
-
-            this.tmdb.tv.getDetails(id)
-                .then(m => {
-                    // Copy show attributes
-                    for (var k in m) {
-                        this.showDetails[id][k] = m[k];
-                    }
-
-                    this.showDetails[id].loading = false;
-                });
-
-            return this.showDetails[id];
-        },
-        getSeasonDetails(showID, seasonNumber) {
-            if (typeof this.seasonDetails[showID] === 'undefined') {
-                this.seasonDetails[showID] = {}
-            }
-
-            if (typeof this.seasonDetails[showID][seasonNumber] === 'object') {
-                return this.seasonDetails[showID][seasonNumber];
-            }
-            this.seasonDetails[showID][seasonNumber] = { season_number: seasonNumber, loading: true };
-
-            this.tmdb.tv.getSeasonDetails(showID, seasonNumber)
-                .then(m => {
-                    // Copy show attributes
-                    for (var k in m) {
-                        this.seasonDetails[showID][seasonNumber][k] = m[k];
-                    }
-
-                    this.seasonDetails[showID][seasonNumber].loading = false;
-                });
-
-            return this.seasonDetails[showID][seasonNumber];
-        }
     },
     mounted() {
         // TODO: Do this in a proper place

@@ -7,6 +7,10 @@
                     :title="movieDetails.data.title"
                     :subtitle="year"
                 />
+                <MediaThumb
+                    v-else
+                    :loading="true"
+                />
         </router-link>
     </div>
 </template>
