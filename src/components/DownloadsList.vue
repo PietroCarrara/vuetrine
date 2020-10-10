@@ -49,13 +49,16 @@ export default {
         },
         toggleStatus(download) {
             if (download.status === 'paused') {
+                download.status = download.completion === 1 ? 'completed' : 'downloading';
                 this.$root.client.resumeDownload(download.id);
             } else {
+                download.status = 'paused';
                 this.$root.client.pauseDownload(download.id);
             }
         },
         removeDownload(download) {
             this.$root.client.removeDownload(download.id);
+            this.deleteDownload(download);
         }
     },
     mounted() {
