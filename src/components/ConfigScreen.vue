@@ -80,11 +80,11 @@
                 <div class="card-body">
                     <form>
                         <div class="form-group">
-                            <label for="selected-client">
-                                Client Selection
+                            <label for="selected-provider">
+                                Provider Selection
                             </label>
                             <select
-                                id="selected-client"
+                                id="selected-provider"
                                 v-model="selectedProvider"
                                 class="form-control"
                             >
