@@ -1,24 +1,13 @@
 # vuetrine
 
-## Project setup
-```
-npm install
-```
+Download movies and TV shows through the browser
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+---
 
-### Compiles and minifies for production
-```
-npm run build
-```
+![Downloads](./readme/hansolo.png)
 
-### Lints and fixes files
-```
-npm run lint
-```
+VueTrine is a software that runs 100% on your browser, and allows you to cross-reference data from torrent trackers with TheMovieDB, providing a beautiful interface to browse a catalog of media.
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+You only need to have a [TMDB API key](https://www.themoviedb.org/settings/api).
+
+![Downloads](./readme/downloads.png)
