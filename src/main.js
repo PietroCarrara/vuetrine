@@ -4,7 +4,7 @@ import router from './router'
 import AsyncComputed from 'vue-async-computed'
 import { TheMovieDBCacheProxy } from './tmdb/tmdbcache.js'
 import { clients } from './clients/clients';
-import providers from './providers/providers'
+import { providers } from './providers/providers'
 
 Vue.config.productionTip = false;
 
@@ -48,17 +48,78 @@ new Vue({
     render: h => h(App),
     data: () => {
         return {
-            provider: new providers['yts'](),
-            client: new clients['transmission'](),
-            tmdb: new TheMovieDBCacheProxy(process.env.TMDB_KEY),
+            provider: null,
+            client: null,
+            tmdb: null,
         };
     },
     router,
     methods: {
         bestMagnet,
+        saveTMDB() {
+            if (this.tmdb) {
+                localStorage.setItem('tmdb-key', this.tmdb.key);
+            }
+        },
+        saveClient() {
+            if (this.client) {
+                for (var type in clients) {
+                    if (this.client instanceof clients[type]) {
+                        localStorage.setItem('client-type', type);
+                        this.client.save();
+                        return;
+                    }
+                }
+            }
+        },
+        saveProvider() {
+            if (this.provider) {
+                for (var type in providers) {
+                    if (this.provider instanceof providers[type]) {
+                        localStorage.setItem('provider-service', type);
+                        return;
+                    }
+                }
+            }
+        },
+        // Saves the data specified on the .env
+        // if there is no other data saved
+        saveInitialState() {
+            if (localStorage.getItem('tmdb-key') === null && process.env.TMDB_KEY) {
+                localStorage.setItem('tmdb-key', process.env.TMDB_KEY);
+            }
+
+            if (localStorage.getItem('client-type') === null && process.env.DEFAULT_CLIENT) {
+                localStorage.setItem('client-type', process.env.DEFAULT_CLIENT);
+            }
+
+            if (localStorage.getItem('provider-service') === null && process.env.DEFAULT_PROVIDER) {
+                localStorage.setItem('provider-service', process.env.DEFAULT_PROVIDER);
+            }
+        },
     },
-    mounted() {
-        // TODO: Do this in a proper place
-        this.client.config();
-    }
+    beforeMount() {
+        // Initial state
+        this.saveInitialState();
+
+        // Load TMDB api key
+        var key = localStorage.getItem('tmdb-key');
+        if (key) {
+            this.tmdb = new TheMovieDBCacheProxy(key);
+        }
+
+        // Load the client
+        var client = localStorage.getItem('client-type');
+        if (client && clients[client]) {
+            this.client = new clients[client]();
+            this.client.load();
+        }
+
+        // Load the provider
+        var provider = localStorage.getItem('provider-service');
+        if (provider && providers[provider]) {
+            this.provider = new providers[provider]();
+            this.provider.load();
+        }
+    },
 }).$mount('#app');

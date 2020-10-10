@@ -1,5 +1,6 @@
 import Transmission from './transmission';
 import { Download, Client, DownloadInfo } from '../client';
+import TransmissionConfig from './TransmissionConfig';
 
 const torrentFields = [
     'id',
@@ -10,6 +11,14 @@ const torrentFields = [
 ];
 
 class TransmissionClient extends Client {
+
+    static get description() {
+        return 'A client for transmissionbt.com'
+    }
+
+    static get configComponent() {
+        return TransmissionConfig;
+    }
 
     constructor() {
         super();
@@ -26,18 +35,48 @@ class TransmissionClient extends Client {
         this.transmission = new Transmission(host, Number(port), root);
 
         this.torrents = {};
-    }
 
-    async config() {
-        // TODO: Check if host is OK
-
+        this.alive = true;
         this.fireUpdate();
     }
 
     fireUpdate() {
-        this.updateTorrents()
-            .then(new Promise(r => setTimeout(r, 2 * 1000))
-                .then(() => this.fireUpdate()))
+        if (this.alive) {
+            this.updateTorrents()
+                .then(new Promise(r => setTimeout(r, 2 * 1000))
+                    .then(() => this.fireUpdate()))
+        }
+    }
+
+    save() {
+        var obj = {
+            host: this.transmission.host,
+            port: this.transmission.port,
+            root: this.transmission.root,
+        };
+
+        localStorage.setItem('transmission-client', JSON.stringify(obj));
+    }
+
+    load() {
+        var json = localStorage.getItem('transmission-client');
+        if (json) {
+            var obj = JSON.parse(json);
+
+            if (obj.host) {
+                this.transmission.host = obj.host;
+            }
+            if (obj.port) {
+                this.transmission.port = obj.port;
+            }
+            if (obj.root) {
+                this.transmission.root = obj.root;
+            }
+        }
+    }
+
+    destroy() {
+        this.alive = false;
     }
 
     isValid() {

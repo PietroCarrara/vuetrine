@@ -36,9 +36,20 @@ class DownloadInfo {
 }
 
 class Client {
+
+    /**
+     * A description to present to the user.
+     */
+    static get description() { return '' }
+
+    /**
+     * A component to use when configuring this
+     * client on the configuration screen.
+     */
+    static get configComponent() { return null };
+
     /**
      * Mandatory parameterless constructor
-     * Don't make any heavy lifting (requests, configuration loading...) here.
      */
     constructor() {
         this.updateCallbacks = [];
@@ -46,10 +57,24 @@ class Client {
     }
 
     /**
-     * Do your configuration at this step.
-     * You can make requests and load stuff
+     * Save configuration to local storage
      */
-    async config() {
+    save() {
+
+    }
+
+    /**
+     * Load configuration from local storage
+     */
+    load() {
+
+    }
+
+    /**
+     * Shut down this client. Send requests to close a session
+     * and etc.
+     */
+    destroy() {
 
     }
 

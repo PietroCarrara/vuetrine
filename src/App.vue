@@ -2,7 +2,7 @@
     <div id="app">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <router-link to="/" class="navbar-brand">
-                <span class="vt">V</span>ue<span class="vt">T</span>rine
+                <SiteLogo />
             </router-link>
             <button
                 class="navbar-toggler"
@@ -19,10 +19,20 @@
             <div class="collapse navbar-collapse" id="main-navbar">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <router-link to="/downloads" class="nav-link">Downloads</router-link>
+                        <router-link to="/downloads" class="nav-link">
+                            Downloads
+                        </router-link>
+                    </li>
+                    <li class="nav-item">
+                        <router-link to="/config" class="nav-link">
+                            Configuration
+                        </router-link>
                     </li>
                 </ul>
-                <form class="form-inline my-2 my-lg-0" v-on:submit.prevent="search(searchName)">
+                <form
+                    class="form-inline my-2 my-lg-0"
+                    v-on:submit.prevent="search(searchName)"
+                >
                     <input
                         v-model="searchName"
                         class="form-control mr-sm-2"
@@ -30,7 +40,9 @@
                         placeholder="Search"
                         aria-label="Search"
                     />
-                    <button class="btn btn-outline-success my-2 my-sm-0" type>Search</button>
+                    <button class="btn btn-outline-success my-2 my-sm-0" type>
+                        Search
+                    </button>
                 </form>
             </div>
         </nav>
@@ -40,15 +52,14 @@
     </div>
 </template>
 
-<style scoped>
-.vt {
-    color: #41b883;
-}
-</style>
-
 <script>
+import SiteLogo from './components/SiteLogo';
+
 export default {
     name: 'App',
+    components: {
+        SiteLogo,
+    },
     data() {
         return {
             searchName: '',
@@ -60,6 +71,27 @@ export default {
                 this.$router.push({ path: '/search', query: { q: name } });
             }
         },
+        checkValidity() {
+            if (this.$router.currentRoute.name !== 'config') {
+                if (!this.isValid()) {
+                    this.$router.push({ path: '/config', query: { 'redirect': this.$router.currentRoute.path } });
+                }
+            }
+        },
+        isValid() {
+            return this.$root.tmdb &&
+                this.$root.tmdb.key.length > 0 &&
+                this.$root.client &&
+                this.$root.client.isValid() &&
+                this.$root.provider &&
+                this.$root.provider.isValid();
+        }
+    },
+    beforeMount() {
+        this.checkValidity();
+    },
+    beforeUpdate() {
+        this.checkValidity();
     },
 }
 </script>

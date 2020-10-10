@@ -1,4 +1,4 @@
-const { default: LinkClient } = require('./link/client');
+const { LinkClient } = require('./link/client');
 const { TransmissionClient } = require('./transmission/client');
 
 const clients = {

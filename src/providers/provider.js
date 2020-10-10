@@ -53,8 +53,16 @@ class PagedResponse {
  */
 class Provider {
 
+    static get description() {
+        return '';
+    }
+
+    static get configComponent() {
+        return null;
+    }
+
     /**
-     * A mandatory parameterless constructor is mandaroty
+     * A mandatory parameterless constructor
      * This should put the provider in a 'default' state
      */
     constructor() {
@@ -62,19 +70,22 @@ class Provider {
     }
 
     /**
-     * Here, the provider can load some previously saved configuration
-     * (stored, for exaple, in the browser's localStorage)
-     *
-     * This is garanteed to be called at least once before any other
-     * methods
+     * Save any relevant configuration data to the localStorage
      */
-    loadConfig() {
+    save() {
+
+    }
+
+    /**
+     * Load data from localStorage
+     */
+    load() {
 
     }
 
     /**
      * Should return whether the provider is currently in a valid state
-     * (i.e it has all the data it needs in order to function)
+     * (i.e it has all the data it needs and the data is valid)
      * @returns {Boolean}
      */
     isValid() {

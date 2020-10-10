@@ -2,14 +2,15 @@ import YTS from './yts.js/yts';
 import { Provider, MediaInfo, PagedResponse, TorrentMagnet } from '../provider';
 
 export class YTSProvider extends Provider {
+
+    static get description() {
+        return 'yts.mx torrents'
+    }
+
     constructor() {
         super();
 
         this.yts = new YTS();
-    }
-
-    loadConfig() {
-        // We don't have any configuration to do right now
     }
 
     isValid() {

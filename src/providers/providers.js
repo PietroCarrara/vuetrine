@@ -4,4 +4,6 @@ const providers = {
     'yts': YTSProvider,
 };
 
-export default providers;
+export {
+    providers
+};

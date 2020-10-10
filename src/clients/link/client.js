@@ -1,13 +1,17 @@
 import { Client } from '../client';
 
-export default class LinkClient extends Client {
+export class LinkClient extends Client {
+
+    static get description() {
+        return 'Opens magnet links with the browser (recommended)';
+    }
 
     isValid() {
         return true; // You're always valid! :trans_rights:
     }
 
-    getDownloads() {
-        return new Promise(r => r([]));
+    async getDownloads() {
+        return [];
     }
 
     downloadMagnet(magnet, info) {
