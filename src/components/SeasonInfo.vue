@@ -38,19 +38,18 @@
                         :selected="episode.id == selectedEpisode"
                         v-on:clicked="select(episode)"
                         class="my-3"
-                    />
-                    <div
-                        v-if="episode.id == selectedEpisode"
-                        class="lifted rounded row p-2 text-center"
                     >
                         <TorrentList
-                            :torrents="
-                                episodeTorrents[episode.episode_number]
+                            :torrents="episodeTorrents[episode.episode_number]"
+                            v-on:download="
+                                (m) =>
+                                    downloadEpisodeMagnet(
+                                        m,
+                                        episode.episode_number
+                                    )
                             "
-
-                            v-on:download="m => downloadEpisodeMagnet(m, episode.episode_number)"
                         />
-                    </div>
+                    </EpisodeCard>
                 </div>
             </div>
         </div>
