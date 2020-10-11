@@ -1,12 +1,12 @@
 <template>
-    <div v-if="torrents === null" class="font-weight-bold">
+    <div v-if="torrents === null" class="col-12 font-weight-bold">
         Searching torrents...
         <LoadingSpinner class="mt-1" />
     </div>
-    <div v-else-if="torrents.length <= 0" class="font-weight-bold">
+    <div v-else-if="torrents.length <= 0" class="col-12 font-weight-bold">
         We couldn't find any torrents.
     </div>
-    <div class="row" v-else>
+    <div class="col-12 row" v-else>
         <div class="col-12">
             <hr />
             <h4>Download Options:</h4>

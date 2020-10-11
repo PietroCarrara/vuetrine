@@ -31,7 +31,7 @@ class DownloadInfo {
         this.type = type;
         this.season = season;
         this.isFullSeason = isFullSeason;
-        this.episode = 0;
+        this.episode = episode;
     }
 }
 

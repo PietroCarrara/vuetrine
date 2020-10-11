@@ -22,24 +22,43 @@
             <p class="text-justify">{{ overview }}</p>
         </div>
         <div class="col-12 col-md-6">
-            <TorrentList v-on:download="downloadMagnet" :torrents="seasonTorrents" />
+            <TorrentList
+                v-on:download="downloadShowMagnet"
+                :torrents="seasonTorrents"
+            />
         </div>
         <div class="col-12 col-md-6">
             <div class="col-12">
-                <EpisodeCard
+                <div
                     v-for="episode in seasonDetails.data.episodes"
                     :key="episode.id"
-                    :episode="episode"
-                    :selected="episode.id == selectedEpisode"
-                    v-on:clicked="select(episode)"
-                    class="my-3"
-                />
+                >
+                    <EpisodeCard
+                        :episode="episode"
+                        :selected="episode.id == selectedEpisode"
+                        v-on:clicked="select(episode)"
+                        class="my-3"
+                    />
+                    <div
+                        v-if="episode.id == selectedEpisode"
+                        class="lifted rounded row p-2 text-center"
+                    >
+                        <TorrentList
+                            :torrents="
+                                episodeTorrents[episode.episode_number]
+                            "
+
+                            v-on:download="m => downloadEpisodeMagnet(m, episode.episode_number)"
+                        />
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+import Vue from 'vue';
 import { MediaInfo } from '../providers/provider';
 import { DownloadInfo } from '../clients/client';
 // import BestTorrent from './BestTorrent.vue';
@@ -86,6 +105,7 @@ export default {
             },
             selectedEpisode: -1,
             seasonTorrents: null,
+            episodeTorrents: [],
         };
     },
     watch: {
@@ -153,20 +173,21 @@ export default {
                 this.selectedEpisode = -1;
             } else {
                 this.selectedEpisode = episode.id;
+
+                if (!this.episodeTorrents[episode.episode_number]) {
+                    this.reloadEpisodeTorrents(episode.episode_number);
+                }
             }
         },
         async reloadSeasonTorrents() {
             this.seasonTorrents = null;
-            if (this.showDetails.loading) {
-                return;
-            }
 
             var ids = await this.$root.tmdb.tv.getExternalIDs(this.showID);
 
             var info = new MediaInfo({
                 imdb: ids.imdb_id,
                 type: 'show',
-                title: this.showDetails.data.name,
+                title: this.showDetails.loading ? undefined : this.showDetails.data.name,
                 year: this.year,
                 isEntireSeason: true,
                 season: this.seasonNumber,
@@ -176,11 +197,34 @@ export default {
 
             this.seasonTorrents = magnets.response;
         },
-        downloadMagnet(magnet) {
+        async reloadEpisodeTorrents(episodeNumber) {
+            this.episodeTorrents[episodeNumber] = null;
+
+            var ids = await this.$root.tmdb.tv.getExternalIDs(this.showID);
+
+            var info = new MediaInfo({
+                imdb: ids.imdb_id,
+                type: 'show',
+                title: this.seasonDetails.loading ? '' : this.showDetails.data.name,
+                year: this.year,
+                isEntireSeason: false,
+                season: this.seasonNumber,
+                episode: episodeNumber,
+            });
+
+            var magnets = await this.$root.showProvider.getMagnets(info);
+            Vue.set(this.episodeTorrents, episodeNumber, magnets.response);
+        },
+        downloadShowMagnet(magnet) {
             var info = new DownloadInfo(this.showID, 'show', this.seasonNumber, true);
             this.$root.client.downloadMagnet(magnet.link, info);
-            // this.$router.push('/downloads');
+            this.$router.push('/downloads');
         },
+        downloadEpisodeMagnet(magnet, episodeNumber) {
+            var info = new DownloadInfo(this.showID, 'show', this.seasonNumber, false, episodeNumber);
+            this.$root.client.downloadMagnet(magnet.link, info);
+            this.$router.push('/downloads');
+        }
     },
     mounted() {
         this.loadData();
