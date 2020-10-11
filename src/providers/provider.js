@@ -84,6 +84,13 @@ class Provider {
     }
 
     /**
+     * Dispose of the provider
+     */
+    destroy() {
+
+    }
+
+    /**
      * Should return whether the provider is currently in a valid state
      * (i.e it has all the data it needs and the data is valid)
      * @returns {Boolean}
@@ -96,7 +103,7 @@ class Provider {
      * Searches for torrents for media 'info'
      * @param {MediaInfo} info Info to use when querying services
      * @param {Number=} page The page to look up using pagination. Should default to 1.
-     * @returns {PagedResponse<[]String>} PagedResponce of array of magnet links, in no particular order
+     * @returns {PagedResponse<[]TorrentMagnet>} PagedResponce of array of magnet links, in no particular order
      */
     async getMagnets(info, page) {
 

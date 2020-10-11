@@ -24,6 +24,15 @@ const bestMagnet = (torrents) => {
         return !(name.includes('hevc') && name.includes('x265'))
     });
 
+    // 1080p and size under ~6GB
+    for (var torrent of torrents) {
+        const name = torrent.title.toLowerCase();
+        if (name.includes('1080p') && torrent.size && torrent.size < 6 * 1024 * 1024 * 1024) {
+            return torrent;
+        }
+    }
+
+    // 1080p
     for (var torrent of torrents) {
         const name = torrent.title.toLowerCase();
         if (name.includes('1080p')) {

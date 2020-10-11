@@ -226,6 +226,10 @@ export default {
             this.$root.client = new clients[this.selectedClient]();
         },
         selectedProvider() {
+            if (this.$root.provider) {
+                this.$root.provider.destroy();
+            }
+
             this.$root.provider = new providers[this.selectedProvider]();
         }
     },

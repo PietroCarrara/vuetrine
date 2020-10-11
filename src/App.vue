@@ -24,7 +24,7 @@
                         </router-link>
                     </li>
                     <li class="nav-item">
-                        <router-link to="/config" class="nav-link">
+                        <router-link :to="{ path: '/config', query: { 'redirect': this.$router.currentRoute.path } }" class="nav-link">
                             Configuration
                         </router-link>
                     </li>

@@ -4,7 +4,7 @@ import { Provider, MediaInfo, PagedResponse, TorrentMagnet } from '../provider';
 export class YTSProvider extends Provider {
 
     static get description() {
-        return 'yts.mx torrents'
+        return 'yts.mx torrents';
     }
 
     constructor() {
@@ -21,7 +21,7 @@ export class YTSProvider extends Provider {
      * Searches for torrents for media 'info'
      * @param {MediaInfo} info Info to use when querying services
      * @param {Number=} page The page to look up using pagination. Should default to 1.
-     * @returns {PagedResponse<[]String>} PagedResponce of array of magnet links, in no particular order
+     * @returns {PagedResponse<[]TorrentMagnet>} PagedResponce of array of magnet links, in no particular order
      */
     async getMagnets(info, page = 1) {
         var query = '';
