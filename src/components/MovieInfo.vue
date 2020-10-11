@@ -39,28 +39,10 @@
                             :id="movieDetails.data.imdb_id"
                         />
                     </div>
-                    <div class="col-12 col-lg-6 mt-3 text-center">
-                        <div v-if="torrents == null" class="font-weight-bold">
-                            Searching torrents...
-                            <LoadingSpinner class="mt-1" />
-                        </div>
-                        <div
-                            v-else-if="torrents.length <= 0"
-                            class="font-weight-bold"
-                        >
-                            We couldn't find any torrents.
-                        </div>
-                        <a
-                            v-else-if="bestMagnet != null"
-                            v-on:click="
-                                downloadTorrent(bestMagnet, movieDetails.data)
-                            "
-                            class="btn btn-block btn-success font-weight-bold"
-                        >
-                            {{ bestMagnet.size | size }}
-                            <i class="zmdi zmdi-download"></i>
-                        </a>
-                    </div>
+                    <BestTorrent
+                        v-on:download="downloadTorrent"
+                        :torrents="torrents"
+                    />
                 </div>
                 <hr />
                 <div>
@@ -73,48 +55,24 @@
                 </div>
             </div>
         </div>
-        <div class="row" v-if="torrents != null && torrents.length > 0">
-            <div class="col-12">
-                <hr />
-                <h4>Download Options:</h4>
-
-                <div class="col-12 pr-0">
-                    <div
-                        v-for="torrent of torrents"
-                        :key="torrent.link"
-                        class="row col-12 py-3 striped"
-                    >
-                        <div>
-                            <a
-                                role="button"
-                                class="btn btn-success badge mr-1"
-                                v-on:click="
-                                    downloadTorrent(torrent, movieDetails.data)
-                                "
-                            >
-                                <i class="zmdi zmdi-download"></i>
-                            </a>
-                            <span
-                                class="badge py-1 badge-secondary torrent-info"
-                                >{{ torrent.size | size }}</span
-                            >
-                        </div>
-                        <div class="text-truncate col">{{ torrent.title }}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <TorrentList
+            v-if="torrents !== null && torrents.length > 0"
+            v-on:download="downloadTorrent"
+            :torrents="torrents"
+        />
     </div>
 </template>
 
 <script>
 import { DownloadInfo } from '../clients/client';
 import { MediaInfo } from '../providers/provider';
+import BestTorrent from './BestTorrent.vue';
 import IMDBLink from './IMDBLink.vue';
 import LoadingSpinner from './LoadingSpinner.vue';
 import MediaQuery from './MediaQuery.vue';
 import MovieThumb from './MovieThumb.vue';
 import TMDBLink from './TMDBLink.vue';
+import TorrentList from './TorrentList.vue';
 import YoutubeLink from './YoutubeLink.vue';
 
 export default {
@@ -125,6 +83,8 @@ export default {
         YoutubeLink,
         TMDBLink,
         LoadingSpinner,
+        BestTorrent,
+        TorrentList,
     },
     props: {
         id: {
@@ -225,27 +185,21 @@ export default {
             }
 
             this.$root.movieProvider.getMagnets(new MediaInfo({
-                imdb: this.movieDetails.data.imdb_id
+                imdb: this.movieDetails.data.imdb_id,
+                type: 'movie',
+                title: this.movieDetails.data.title,
+                year: this.year,
             }))
                 .then(r => {
                     this.torrents = r.response;
                     this.nextTorrentPage = r.next;
                 });
         },
-        downloadTorrent(torrent, movie) {
-            var info = new DownloadInfo(movie.id, 'movie');
+        downloadTorrent(torrent) {
+            var info = new DownloadInfo(this.id, 'movie');
             this.$root.client.downloadMagnet(torrent.link, info);
             this.$router.push('/downloads');
         },
     }
 }
 </script>
-
-<style scoped>
-.striped:nth-child(even) {
-    background-color: #f8f9fa;
-}
-.torrent-info {
-    width: 6em;
-}
-</style>

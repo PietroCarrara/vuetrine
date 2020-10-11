@@ -2,12 +2,12 @@
     <div>
         <MiniCard>
             <LoadingSpinner
-                v-if="movieDetails.loading"
+                v-if="seasonDetails.loading || showDetails.loading"
                 style="padding-top: 150px"
             ></LoadingSpinner>
             <div v-else>
                 <router-link
-                    :to="`/movie/${this.download.info.tmdb}`"
+                    :to="`/show/${this.download.info.tmdb}`"
                     class
                     style
                 >
@@ -22,10 +22,10 @@
                 </router-link>
                 <div class="p-3">
                     <div class="text-center text-truncate h5">
-                        {{ movieDetails.data.title }}
+                        {{ showDetails.data.name }}
                     </div>
                     <div>
-                        <span class="text-muted h6">{{ year }}</span>
+                        <span class="text-muted h6">{{ subtitle }}</span>
                         <div
                             v-if="download.size"
                             class="float-right badge badge-secondary"
@@ -90,16 +90,15 @@
 
 <script>
 import { Download } from '../clients/client';
-import LoadingSpinner from './LoadingSpinner.vue';
-import MediaThumb from './MediaThumb.vue';
-import MiniCard from './MiniCard.vue';
+import LoadingSpinner from './LoadingSpinner.vue'
+import MiniCard from './MiniCard.vue'
+
 
 export default {
-    name: 'MovieDownload',
+    name: 'ShowDownload',
     components: {
-        MediaThumb,
-        MiniCard,
         LoadingSpinner,
+        MiniCard,
     },
     props: {
         download: {
@@ -109,11 +108,34 @@ export default {
     },
     data() {
         return {
-            movieDetails: {
+            showDetails: {
+                loading: true,
+                data: null,
+            },
+            seasonDetails: {
                 loading: true,
                 data: null,
             },
         };
+    },
+    computed: {
+        subtitle() {
+            if (this.download.info.isFullSeason) {
+                return 'Season ' + this.download.info.season;
+            }
+
+            var season = ('00' + this.download.info.season).slice(-2);
+            var episode = ('00' + this.download.info.episode).slice(-2);
+
+            return `S${season}E${episode}`;
+        },
+        poster() {
+            if (this.seasonDetails.loading) {
+                return '';
+            }
+
+            return this.$root.tmdb.common.getImageUrl(this.seasonDetails.data.poster_path, 'w500');
+        },
     },
     methods: {
         toggleStatus(download) {
@@ -123,28 +145,18 @@ export default {
             this.$emit('remove-download', download);
         },
     },
-    computed: {
-        poster() {
-            if (this.movieDetails.loading || !this.movieDetails.data.poster_path) {
-                return '';
-            }
-
-            return this.$root.tmdb.common.getImageUrl(this.movieDetails.data.poster_path, 'w500');
-        },
-        year() {
-            if (this.movieDetails.loading || !this.movieDetails.data.release_date) {
-                return '';
-            }
-
-            return new Date(this.movieDetails.data.release_date).getFullYear();
-        },
-    },
     mounted() {
-        this.$root.tmdb.movie.getSimpleDetails(this.download.info.tmdb)
-            .then(m => {
-                this.movieDetails.data = m;
-                this.movieDetails.loading = false;
+        this.$root.tmdb.tv.getSimpleDetails(this.download.info.tmdb)
+            .then(tv => {
+                this.showDetails.data = tv;
+                this.showDetails.loading = false;
             });
-    }
-};
+
+        this.$root.tmdb.tv.getSeasonDetails(this.download.info.tmdb, this.download.info.season)
+            .then(s => {
+                this.seasonDetails.data = s;
+                this.seasonDetails.loading = false;
+            });
+    },
+}
 </script>

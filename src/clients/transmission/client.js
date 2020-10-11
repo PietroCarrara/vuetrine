@@ -114,9 +114,14 @@ class TransmissionClient extends Client {
         // We will save the metadata using the download path
         var downloadDir = this.downloadDir + info.type + '/';
         if (info.type == 'show') {
-            var episode = info.isFullSeason ? 0 : info.episode;
-            var full = info.isFullSeason ? 'full' : 'single';
-            downloadDir += `${info.tmdb}.S${info.season}E${episode}.${full}/`;
+            var season = ("00" + info.season).slice(-2);
+            var episode = ("00" + info.episode).slice(-2);
+
+            if (info.isFullSeason) {
+                downloadDir += `${info.tmdb}.S${season}/`;
+            } else {
+                downloadDir += `${info.tmdb}.S${season}E${episode}/`;
+            }
         } else {
             downloadDir += info.tmdb + '/';
         }
@@ -147,10 +152,28 @@ class TransmissionClient extends Client {
 
             switch (type) {
                 case 'movie':
-                    metadata = new DownloadInfo(Number(info), type);
+                    metadata = new DownloadInfo(Number(info), 'movie');
                     break;
                 case 'show':
-                    // TODO: Implement
+                    var [id, seasonEpisode] = info.split('.');
+                    var regex = /S(?<season>\d+)(E(?<episode>\d+))?/;
+                    var regexRes = regex.exec(seasonEpisode);
+                    if (regexRes.groups.episode) {
+                        metadata = new DownloadInfo(
+                            Number(id),
+                            'show',
+                            Number(regexRes.groups.season),
+                            false,
+                            Number(regexRes.groups.episode),
+                        );
+                    } else {
+                        metadata = new DownloadInfo(
+                            Number(id),
+                            'show',
+                            Number(regexRes.groups.season),
+                            true,
+                        );
+                    }
                     break;
             }
 

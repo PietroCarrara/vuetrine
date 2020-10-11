@@ -2,13 +2,23 @@
     <div>
         <LoadingSpinner v-if="loading" />
         <div v-else>
-            <div v-if="Object.keys(downloads).length <= 0" class="text-center text-muted">
+            <div
+                v-if="Object.keys(downloads).length <= 0"
+                class="text-center text-muted"
+            >
                 No downloads at the moment.
             </div>
             <HorizontalScroll v-else>
                 <div v-for="download of downloads" :key="download.id">
                     <MovieDownload
                         v-if="download.info.type == 'movie'"
+                        v-on:toggle-status="toggleStatus"
+                        v-on:remove-download="removeDownload"
+                        class="mx-2 my-3"
+                        :download="download"
+                    />
+                    <ShowDownload
+                        v-else
                         v-on:toggle-status="toggleStatus"
                         v-on:remove-download="removeDownload"
                         class="mx-2 my-3"
@@ -25,6 +35,8 @@ import Vue from 'vue';
 import HorizontalScroll from './HorizontalScroll.vue';
 import LoadingSpinner from './LoadingSpinner.vue';
 import MovieDownload from './MovieDownload.vue';
+import ShowDownload from './ShowDownload.vue';
+
 
 
 export default {
@@ -33,6 +45,7 @@ export default {
         LoadingSpinner,
         HorizontalScroll,
         MovieDownload,
+        ShowDownload,
     },
     data() {
         return {

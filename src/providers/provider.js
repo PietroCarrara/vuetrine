@@ -19,15 +19,17 @@ class TorrentMagnet {
 class MediaInfo {
     /**
      * @param {Object} info Information about the media
+     * @param {'show'|'movie'} info.type Whether the media represents a movie or a show
+     * @param {String=} info.imdb The media imdb id
      * @param {String=} info.title The media title
-     * @param {'show'|'movie'=} info.type Whether the media represents
+     * @param {Number=} info.year The media release year
      * @param {Number=} info.season The media season number. Ignore if type === 'movie'
      * @param {Number=} info.episode The media episode number. Ignore if type === 'movie'
-     * @param {String=} info.imdb The media imdb id
      * @param {Boolean=} info.isEntireSeason Whether this instance represents a entire season or not. Ignore if type ==='movie'
      */
     constructor(info) {
         this.title = info.title;
+        this.year = info.year;
         this.type = info.type;
         this.season = info.season;
         this.episode = info.episode;

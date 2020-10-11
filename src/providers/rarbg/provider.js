@@ -2,11 +2,11 @@ import { MediaInfo, PagedResponse, Provider, TorrentMagnet } from '../provider';
 
 class CORSClient {
     constructor() {
-        this.host = 'https://thingproxy.freeboard.io/fetch/';
+        this.host = 'https://api.allorigins.win/raw?url=';
     }
 
     fetch(q = {}) {
-        var url = new URL(this.host + 'https://torrentapi.org/pubapi_v2.php');
+        var url = new URL('https://torrentapi.org/pubapi_v2.php');
 
         if (q) {
             for (var i in q) {
@@ -14,7 +14,7 @@ class CORSClient {
             }
         }
 
-        return fetch(url);
+        return fetch(this.host + encodeURIComponent(url));
     }
 }
 
@@ -134,7 +134,25 @@ class RarbgProvider extends Provider {
             return new PagedResponse([], null);
         }
 
-        // TODO: Special treatment for TV shows
+        if (info.type === 'show') {
+
+            // Make sure that search_string exists
+            if (params.search_string) {
+                params.search_string += ' ';
+            } else {
+                params.search_string = '';
+            }
+
+            // Padding zeroes
+            var season = ("00" + info.season).slice(-2);
+            var episode = ("00" + info.episode).slice(-2);
+
+            if (info.isEntireSeason) {
+                params.search_string += `.S${season}.`;
+            } else {
+                params.search_string += `.S${season}E${episode}.`;
+            }
+        }
 
         var torrents = await (await this.fetch(params)).json();
 
