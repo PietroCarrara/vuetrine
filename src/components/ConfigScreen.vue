@@ -80,12 +80,12 @@
                 <div class="card-body">
                     <form>
                         <div class="form-group">
-                            <label for="selected-provider">
-                                Provider Selection
+                            <label for="selected-movie-provider">
+                                Movie Provider
                             </label>
                             <select
-                                id="selected-provider"
-                                v-model="selectedProvider"
+                                id="selected-movie-provider"
+                                v-model="selectedMovieProvider"
                                 class="form-control"
                             >
                                 <option disabled value="">
@@ -102,20 +102,60 @@
                             </select>
                         </div>
                     </form>
-                    <div class="p-2" v-if="providers[selectedProvider]">
+                    <div class="p-2" v-if="providers[selectedMovieProvider]">
                         <small
                             v-if="
-                                providers[selectedProvider].configComponent ===
+                                providers[selectedMovieProvider].configComponent ===
                                 null
                             "
                             class="text-muted"
                         >
-                            The {{ selectedProvider }} provider does not require
+                            The {{ selectedMovieProvider }} provider does not require
                             further configuration.
                         </small>
                         <component
                             v-else
-                            :is="providers[selectedProvider].configComponent"
+                            :is="providers[selectedMovieProvider].configComponent"
+                        />
+                    </div>
+                    <form>
+                        <div class="form-group">
+                            <label for="selected-show-provider">
+                                Show Provider
+                            </label>
+                            <select
+                                id="selected-show-provider"
+                                v-model="selectedShowProvider"
+                                class="form-control"
+                            >
+                                <option disabled value="">
+                                    Select a provider
+                                </option>
+                                <option
+                                    v-for="provider in Object.keys(providers)"
+                                    :key="provider"
+                                    :value="provider"
+                                >
+                                    {{ provider }} -
+                                    {{ providers[provider].description }}
+                                </option>
+                            </select>
+                        </div>
+                    </form>
+                    <div class="p-2" v-if="providers[selectedShowProvider]">
+                        <small
+                            v-if="
+                                providers[selectedShowProvider].configComponent ===
+                                null
+                            "
+                            class="text-muted"
+                        >
+                            The {{ selectedShowProvider }} provider does not require
+                            further configuration.
+                        </small>
+                        <component
+                            v-else
+                            :is="providers[selectedShowProvider].configComponent"
                         />
                     </div>
                 </div>
@@ -163,19 +203,15 @@ export default {
         return {
             tmdbKey: this.$root.tmdb === null ? '' : this.$root.tmdb.key,
             selectedClient: this.currentClient(),
-            selectedProvider: this.currentProvider(),
+            selectedMovieProvider: this.currentMovieProvider(),
+            selectedShowProvider: this.currentShowProvider(),
             clients,
             providers,
         };
     },
     computed: {
         isValid() {
-            return this.$root.tmdb &&
-                this.$root.tmdb.key.length > 0 &&
-                this.$root.client &&
-                this.$root.client.isValid() &&
-                this.$root.provider &&
-                this.$root.provider.isValid();
+            return this.$root.isValid();
         },
     },
     methods: {
@@ -192,13 +228,26 @@ export default {
 
             return '';
         },
-        currentProvider() {
-            if (this.$root.provider === null) {
+        currentMovieProvider() {
+            if (this.$root.movieProvider === null) {
                 return '';
             }
 
             for (var name in providers) {
-                if (this.$root.provider instanceof providers[name]) {
+                if (this.$root.movieProvider instanceof providers[name]) {
+                    return name;
+                }
+            }
+
+            return '';
+        },
+        currentShowProvider() {
+            if (this.$root.showProvider === null) {
+                return '';
+            }
+
+            for (var name in providers) {
+                if (this.$root.showProvider instanceof providers[name]) {
                     return name;
                 }
             }
@@ -225,17 +274,25 @@ export default {
 
             this.$root.client = new clients[this.selectedClient]();
         },
-        selectedProvider() {
-            if (this.$root.provider) {
-                this.$root.provider.destroy();
+        selectedMovieProvider() {
+            if (this.$root.movieProvider) {
+                this.$root.movieProvider.destroy();
             }
 
-            this.$root.provider = new providers[this.selectedProvider]();
+            this.$root.movieProvider = new providers[this.selectedMovieProvider]();
+        },
+        selectedShowProvider() {
+            if (this.$root.showProvider) {
+                this.$root.showProvider.destroy();
+            }
+
+            this.$root.showProvider = new providers[this.selectedMovieProvider]();
         }
     },
     beforeDestroy() {
         this.$root.saveTMDB();
-        this.$root.saveProvider();
+        this.$root.saveMovieProvider();
+        this.$root.saveShowProvider();
         this.$root.saveClient();
     },
 }

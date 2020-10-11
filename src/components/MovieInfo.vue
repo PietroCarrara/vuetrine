@@ -224,7 +224,7 @@ export default {
                 return;
             }
 
-            this.$root.provider.getMagnets(new MediaInfo({
+            this.$root.movieProvider.getMagnets(new MediaInfo({
                 imdb: this.movieDetails.data.imdb_id
             }))
                 .then(r => {

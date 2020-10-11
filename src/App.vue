@@ -73,19 +73,11 @@ export default {
         },
         checkValidity() {
             if (this.$router.currentRoute.name !== 'config') {
-                if (!this.isValid()) {
+                if (!this.$root.isValid()) {
                     this.$router.push({ path: '/config', query: { 'redirect': this.$router.currentRoute.path } });
                 }
             }
         },
-        isValid() {
-            return this.$root.tmdb &&
-                this.$root.tmdb.key.length > 0 &&
-                this.$root.client &&
-                this.$root.client.isValid() &&
-                this.$root.provider &&
-                this.$root.provider.isValid();
-        }
     },
     beforeMount() {
         this.checkValidity();

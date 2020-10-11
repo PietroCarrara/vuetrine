@@ -57,9 +57,10 @@ new Vue({
     render: h => h(App),
     data: () => {
         return {
-            provider: null,
-            client: null,
-            tmdb: null,
+            movieProvider: null, // Magnet provider for movies
+            showProvider: null, // Magnet provider for shows
+            client: null, // Magnet download client
+            tmdb: null, // TMDB api client
         };
     },
     router,
@@ -81,11 +82,21 @@ new Vue({
                 }
             }
         },
-        saveProvider() {
-            if (this.provider) {
+        saveMovieProvider() {
+            if (this.movieProvider) {
                 for (var type in providers) {
-                    if (this.provider instanceof providers[type]) {
-                        localStorage.setItem('provider-service', type);
+                    if (this.movieProvider instanceof providers[type]) {
+                        localStorage.setItem('movie-provider-service', type);
+                        return;
+                    }
+                }
+            }
+        },
+        saveShowProvider() {
+            if (this.showProvider) {
+                for (var type in providers) {
+                    if (this.showProvider instanceof providers[type]) {
+                        localStorage.setItem('show-provider-service', type);
                         return;
                     }
                 }
@@ -102,9 +113,23 @@ new Vue({
                 localStorage.setItem('client-type', process.env.DEFAULT_CLIENT);
             }
 
-            if (localStorage.getItem('provider-service') === null && process.env.DEFAULT_PROVIDER) {
-                localStorage.setItem('provider-service', process.env.DEFAULT_PROVIDER);
+            if (localStorage.getItem('movie-provider-service') === null && process.env.DEFAULT_MOVIE_PROVIDER) {
+                localStorage.setItem('movie-provider-service', process.env.DEFAULT_MOVIE_PROVIDER);
             }
+
+            if (localStorage.getItem('show-provider-service') === null && process.env.DEFAULT_SHOW_PROVIDER) {
+                localStorage.setItem('show-provider-service', process.env.DEFAULT_SHOW_PROVIDER);
+            }
+        },
+        isValid() {
+            return this.tmdb &&
+                this.tmdb.key.length > 0 &&
+                this.client &&
+                this.client.isValid() &&
+                this.movieProvider &&
+                this.movieProvider.isValid() &&
+                this.showProvider &&
+                this.showProvider.isValid();
         },
     },
     beforeMount() {
@@ -124,11 +149,17 @@ new Vue({
             this.client.load();
         }
 
-        // Load the provider
-        var provider = localStorage.getItem('provider-service');
+        // Load the providers
+        var provider = localStorage.getItem('movie-provider-service');
         if (provider && providers[provider]) {
-            this.provider = new providers[provider]();
-            this.provider.load();
+            this.movieProvider = new providers[provider]();
+            this.movieProvider.load();
+        }
+
+        provider = localStorage.getItem('show-provider-service');
+        if (provider && providers[provider]) {
+            this.showProvider = new providers[provider]();
+            this.showProvider.load();
         }
     },
 }).$mount('#app');
