@@ -23,8 +23,10 @@
         </div>
         <div class="col-12 col-md-6">
             <TorrentList
+                v-on:reload="reloadSeasonTorrents"
                 v-on:download="downloadShowMagnet"
                 :torrents="seasonTorrents"
+                :reloadinEnabled="true"
             />
         </div>
         <div class="col-12 col-md-6">
@@ -40,6 +42,7 @@
                         class="my-3"
                     >
                         <TorrentList
+                            :reloadinEnabled="true"
                             :torrents="episodeTorrents[episode.episode_number]"
                             v-on:download="
                                 (m) =>
@@ -48,6 +51,7 @@
                                         episode.episode_number
                                     )
                             "
+                            v-on:reload="reloadEpisodeTorrents(episode.episode_number)"
                         />
                     </EpisodeCard>
                 </div>
@@ -78,7 +82,6 @@ export default {
         TMDBLink,
         EpisodeCard,
         LoadingSpinner,
-        // BestTorrent,
         TorrentList,
     },
     props: {
@@ -196,7 +199,7 @@ export default {
             this.seasonTorrents = magnets.response;
         },
         async reloadEpisodeTorrents(episodeNumber) {
-            this.episodeTorrents[episodeNumber] = null;
+            Vue.set(this.episodeTorrents, episodeNumber, null);
 
             var ids = await this.$root.tmdb.tv.getExternalIDs(this.showID);
 
@@ -224,7 +227,7 @@ export default {
                 title: this.showDetails.data.name,
                 year: this.year,
                 season: this.seasonNumber,
-                isEntireSeason: true,
+                isFullSeason: true,
             });
             this.$root.client.downloadMagnet(magnet.link, info);
             this.$router.push('/downloads');
@@ -240,7 +243,7 @@ export default {
                 title: this.showDetails.data.name,
                 year: this.year,
                 season: this.seasonNumber,
-                isEntireSeason: false,
+                isFullSeason: false,
                 episode: episodeNumber,
             });
             this.$root.client.downloadMagnet(magnet.link, info);

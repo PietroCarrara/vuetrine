@@ -5,7 +5,16 @@
             <LoadingSpinner class="mt-1" />
         </div>
         <div v-else-if="torrents.length <= 0" class="font-weight-bold">
-            We couldn't find any torrents.
+            <div class="col-12">We couldn't find any torrents.</div>
+            <div v-if="reloadinEnabled" class="col-12">
+                <a
+                    role="button"
+                    class="btn btn-success badge px-2 py-1"
+                    v-on:click="reloadTorrents()"
+                >
+                    <i class="zmdi zmdi-refresh"></i>
+                </a>
+            </div>
         </div>
         <a
             v-else-if="bestMagnet != null"
@@ -28,6 +37,9 @@ export default {
     },
     props: {
         torrents: Array,
+        reloadinEnabled: {
+            default: true,
+        },
     },
     computed: {
         bestMagnet() {
@@ -36,6 +48,9 @@ export default {
             }
 
             return this.$root.bestMagnet(this.torrents);
+        },
+        reloadTorrents() {
+            this.$emit('reload');
         }
     },
     methods: {

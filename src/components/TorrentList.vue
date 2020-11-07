@@ -3,8 +3,18 @@
         Searching torrents...
         <LoadingSpinner class="mt-1" />
     </div>
-    <div v-else-if="torrents.length <= 0" class="col-12 text-center p-2 font-weight-bold">
-        We couldn't find any torrents.
+    <div
+        v-else-if="torrents.length <= 0"
+        class="col-12 text-center p-2 font-weight-bold"
+    >
+        <div class="col-12">
+            We couldn't find any torrents.
+        </div>
+        <div v-if="reloadinEnabled" class="col-12">
+            <a role="button" class="btn btn-success badge px-2 py-1" v-on:click="reloadTorrents()">
+                <i class="zmdi zmdi-refresh"></i>
+            </a>
+        </div>
     </div>
     <div class="col-12 row" v-else>
         <div class="col-12">
@@ -29,7 +39,9 @@
                             torrent.size | size
                         }}</span>
                     </div>
-                    <div class="text-truncate col">{{ torrent.title }}</div>
+                    <div class="text-truncate col" v-bind:title="torrent.title">
+                        {{ torrent.title }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -46,11 +58,17 @@ export default {
     },
     props: {
         torrents: Array,
+        reloadinEnabled: {
+            default: false,
+        },
     },
     methods: {
         downloadTorrent(magnet) {
             this.$emit('download', magnet);
         },
+        reloadTorrents() {
+            this.$emit('reload');
+        }
     },
 }
 </script>

@@ -41,7 +41,10 @@
                     </div>
                     <BestTorrent
                         v-on:download="downloadTorrent"
+                        v-on:reload="reloadTorrents"
                         :torrents="torrents"
+                        :reloadinEnabled="true"
+
                     />
                 </div>
                 <hr />
