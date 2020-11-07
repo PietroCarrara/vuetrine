@@ -59,8 +59,6 @@
 <script>
 import Vue from 'vue';
 import { MediaInfo } from '../providers/provider';
-import { DownloadInfo } from '../clients/client';
-// import BestTorrent from './BestTorrent.vue';
 import EpisodeCard from './EpisodeCard.vue';
 import IMDBLink from './IMDBLink.vue';
 import LoadingSpinner from './LoadingSpinner.vue';
@@ -68,6 +66,7 @@ import MediaQuery from './MediaQuery.vue';
 import TMDBLink from './TMDBLink.vue';
 import TorrentList from './TorrentList.vue';
 import YoutubeLink from './YoutubeLink.vue';
+import { DownloadInfo } from '../clients/client';
 
 
 export default {
@@ -215,12 +214,35 @@ export default {
             Vue.set(this.episodeTorrents, episodeNumber, magnets.response);
         },
         downloadShowMagnet(magnet) {
-            var info = new DownloadInfo(this.showID, 'show', this.seasonNumber, true);
+            if (this.seasonDetails.loading) {
+                return;
+            }
+
+            var info = new DownloadInfo({
+                tmdb: this.showID,
+                type: 'show',
+                title: this.showDetails.data.name,
+                year: this.year,
+                season: this.seasonNumber,
+                isEntireSeason: true,
+            });
             this.$root.client.downloadMagnet(magnet.link, info);
             this.$router.push('/downloads');
         },
         downloadEpisodeMagnet(magnet, episodeNumber) {
-            var info = new DownloadInfo(this.showID, 'show', this.seasonNumber, false, episodeNumber);
+            if (this.seasonDetails.loading) {
+                return;
+            }
+
+            var info = new DownloadInfo({
+                tmdb: this.showID,
+                type: 'show',
+                title: this.showDetails.data.name,
+                year: this.year,
+                season: this.seasonNumber,
+                isEntireSeason: false,
+                episode: episodeNumber,
+            });
             this.$root.client.downloadMagnet(magnet.link, info);
             this.$router.push('/downloads');
         }

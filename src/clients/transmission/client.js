@@ -80,8 +80,9 @@ class TransmissionClient extends Client {
     }
 
     isValid() {
-        // For now, we are always valid
-        return true;
+        return this.transmission.host &&
+            this.transmission.port &&
+            this.transmission.root;
     }
 
     async pauseDownload(id) {
@@ -113,6 +114,17 @@ class TransmissionClient extends Client {
 
         // We will save the metadata using the download path
         var downloadDir = this.downloadDir + info.type + '/';
+
+        if (info.title) {
+            downloadDir += info.title.replace(/\//g, ' ').replace(/-/g, ' ').trim();
+
+            if (info.year) {
+                downloadDir += ` (${info.year})`.replace(/-/g, ' ');
+            }
+
+            downloadDir += '-';
+        }
+
         if (info.type == 'show') {
             var season = ("00" + info.season).slice(-2);
             var episode = ("00" + info.episode).slice(-2);
@@ -148,31 +160,41 @@ class TransmissionClient extends Client {
             var info = parts.pop();
             var type = parts.pop();
 
+            // If there is at least one '-', extract the prefix out of the string
+            info = info.split('-');
+            if (info.length > 1) {
+                info.shift();
+            }
+            info = info.join('-');
+
             var metadata;
 
             switch (type) {
                 case 'movie':
-                    metadata = new DownloadInfo(Number(info), 'movie');
+                    metadata = new DownloadInfo({
+                        tmdb: Number(info),
+                        type: 'movie',
+                    });
                     break;
                 case 'show':
                     var [id, seasonEpisode] = info.split('.');
                     var regex = /S(?<season>\d+)(E(?<episode>\d+))?/;
                     var regexRes = regex.exec(seasonEpisode);
                     if (regexRes.groups.episode) {
-                        metadata = new DownloadInfo(
-                            Number(id),
-                            'show',
-                            Number(regexRes.groups.season),
-                            false,
-                            Number(regexRes.groups.episode),
-                        );
+                        metadata = new DownloadInfo({
+                            tmdb: Number(id),
+                            type: 'show',
+                            season: Number(regexRes.groups.season),
+                            isFullSeason: false,
+                            episode: Number(regexRes.groups.episode),
+                        });
                     } else {
-                        metadata = new DownloadInfo(
-                            Number(id),
-                            'show',
-                            Number(regexRes.groups.season),
-                            true,
-                        );
+                        metadata = new DownloadInfo({
+                            tmdb: Number(id),
+                            type: 'show',
+                            season: Number(regexRes.groups.season),
+                            isFullSeason: true,
+                        });
                     }
                     break;
             }

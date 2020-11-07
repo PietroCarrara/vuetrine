@@ -196,7 +196,17 @@ export default {
                 });
         },
         downloadTorrent(torrent) {
-            var info = new DownloadInfo(this.id, 'movie');
+            if (this.movieDetails.loading) {
+                return;
+            }
+
+            var info = new DownloadInfo({
+                tmdb: this.id,
+                type: 'movie',
+                title: this.movieDetails.data.title,
+                year: this.year,
+            });
+
             this.$root.client.downloadMagnet(torrent.link, info);
             this.$router.push('/downloads');
         },

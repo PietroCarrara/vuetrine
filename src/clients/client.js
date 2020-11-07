@@ -20,18 +20,23 @@ class Download {
 class DownloadInfo {
 
     /**
-     * @param {Number} tmdb The tmdb id of the media
-     * @param {'show'|'movie'} type The type of the media
-     * @param {Number} season The season number
-     * @param {Boolean} isFullSeason Whether this is a download of the entire season, rather than a single episode
-     * @param {Number} episode The episode number
+     * @param {Object} info
+     * @param {string} info.title The title of the media
+     * @param {Number} info.year The year of release of the media
+     * @param {Number} info.tmdb The tmdb id of the media
+     * @param {'show'|'movie'} info.type The type of the media
+     * @param {Number} info.season The season number
+     * @param {Boolean} info.isFullSeason Whether this is a download of the entire season, rather than a single episode
+     * @param {Number} info.episode The episode number
      */
-    constructor(tmdb, type, season = 0, isFullSeason = false, episode = 0) {
-        this.tmdb = tmdb;
-        this.type = type;
-        this.season = season;
-        this.isFullSeason = isFullSeason;
-        this.episode = episode;
+    constructor(info) {
+        this.title = info.title;
+        this.year = info.year;
+        this.tmdb = info.tmdb;
+        this.type = info.type;
+        this.season = info.season;
+        this.isFullSeason = info.isFullSeason;
+        this.episode = info.episode;
     }
 }
 
