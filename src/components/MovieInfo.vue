@@ -38,13 +38,37 @@
                             class="mx-1"
                             :id="movieDetails.data.imdb_id"
                         />
+
+                        <div class="col-12 mt-3 p-0">
+                            <div class="row">
+                                <div class="col-10">
+                                    <input
+                                        type="text"
+                                        placeholder="Import custom magnet"
+                                        class="form-control mr-2"
+                                        v-model="customMagnet"
+                                    />
+                                </div>
+                                <div class="col-2 pl-0">
+                                    <button
+                                        class="btn btn-outline-success"
+                                        v-on:click="
+                                            downloadTorrent({
+                                                link: customMagnet,
+                                            })
+                                        "
+                                    >
+                                        <i class="zmdi zmdi-download"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <BestTorrent
                         v-on:download="downloadTorrent"
                         v-on:reload="reloadTorrents"
                         :torrents="torrents"
                         :reloadinEnabled="true"
-
                     />
                 </div>
                 <hr />
@@ -103,6 +127,7 @@ export default {
             },
             torrents: null,
             nextTorrentPage: null,
+            customMagnet: '',
             MovieThumb,
         };
     },
