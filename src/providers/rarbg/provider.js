@@ -14,6 +14,8 @@ class CORSClient {
             }
         }
 
+        url.searchParams.append('cache-block', Math.random());
+
         return fetch(this.host + encodeURIComponent(url));
     }
 }
