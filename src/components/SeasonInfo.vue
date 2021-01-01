@@ -28,6 +28,7 @@
                 :torrents="seasonTorrents"
                 :reloadinEnabled="true"
             />
+            <CustomMagnet :click="downloadShowMagnet" />
         </div>
         <div class="col-12 col-md-6">
             <div class="col-12">
@@ -53,6 +54,13 @@
                             "
                             v-on:reload="reloadEpisodeTorrents(episode.episode_number)"
                         />
+                        <div class="p-2">
+                            <CustomMagnet :click="(m) =>
+                                        downloadEpisodeMagnet(
+                                            m,
+                                            episode.episode_number
+                                        )" />
+                        </div>
                     </EpisodeCard>
                 </div>
             </div>
@@ -71,6 +79,7 @@ import TMDBLink from './TMDBLink.vue';
 import TorrentList from './TorrentList.vue';
 import YoutubeLink from './YoutubeLink.vue';
 import { DownloadInfo } from '../clients/client';
+import CustomMagnet from './CustomMagnet.vue';
 
 
 export default {
@@ -83,6 +92,7 @@ export default {
         EpisodeCard,
         LoadingSpinner,
         TorrentList,
+        CustomMagnet,
     },
     props: {
         showID: {
@@ -229,6 +239,7 @@ export default {
                 season: this.seasonNumber,
                 isFullSeason: true,
             });
+            console.log(magnet);
             this.$root.client.downloadMagnet(magnet.link, info);
             this.$router.push('/downloads');
         },
