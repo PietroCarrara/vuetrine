@@ -8,6 +8,7 @@ const torrentFields = [
     'totalSize',
     'percentDone',
     'status',
+    'labels',
 ];
 
 class TransmissionClient extends Client {
@@ -112,6 +113,11 @@ class TransmissionClient extends Client {
     async downloadMagnet(magnet, info) {
         await this.checkDownloadDir();
 
+        // Save metadata
+        var labels = [
+            `vuetrine-data: ${btoa(JSON.stringify(info))}`,
+        ];
+
         // We will save the metadata using the download path
         var downloadDir = this.downloadDir + info.type + '/';
 
@@ -121,26 +127,26 @@ class TransmissionClient extends Client {
             if (info.year) {
                 downloadDir += ` (${info.year})`.replace(/-/g, ' ');
             }
-
-            downloadDir += '-';
         }
 
         if (info.type == 'show') {
+            // Pad left
             var season = ("00" + info.season).slice(-2);
-            var episode = ("00" + info.episode).slice(-2);
-
-            if (info.isFullSeason) {
-                downloadDir += `${info.tmdb}.S${season}/`;
-            } else {
-                downloadDir += `${info.tmdb}.S${season}E${episode}/`;
-            }
-        } else {
-            downloadDir += info.tmdb + '/';
+            downloadDir += `/S${season}/`;
         }
 
-        this.transmission.invoke('torrent-add', {
+        var res = await this.transmission.invoke('torrent-add', {
             filename: magnet,
             'download-dir': downloadDir,
+        });
+
+        if (res.result !== 'success') {
+            return;
+        }
+
+        this.transmission.invoke('torrent-set', {
+            ids: [res.arguments['torrent-added'].id],
+            labels: labels,
         });
     }
 
@@ -156,70 +162,41 @@ class TransmissionClient extends Client {
         });
 
         for (var torrent of torrents.arguments.torrents) {
-            var parts = torrent.downloadDir.split('/').filter(s => s.length > 0);
-            var info = parts.pop();
-            var type = parts.pop();
 
-            // If there is at least one '-', extract the prefix out of the string
-            info = info.split('-');
-            if (info.length > 1) {
-                info.shift();
+            for (var label of torrent.labels) {
+                if (!label.startsWith('vuetrine-data: ')) {
+                    continue
+                }
+                // Remove the start
+                label = label.substring('vuetrine-data: '.length);
+
+                // Decode metadata
+                var metadata = new DownloadInfo(
+                    JSON.parse(atob(label))
+                );
+
+                var trState = this.transmission.torrentState(torrent.status);
+
+                var state;
+                switch (trState) {
+                    case 'check-queue':
+                    case 'checking-files':
+                    case 'stopped':
+                    case 'waiting':
+                        state = 'paused';
+                        break;
+                    case 'downloading':
+                        state = 'downloading';
+                        break;
+                    case 'seed-queue':
+                    case 'seeding':
+                        state = 'seeding';
+                        break;
+                }
+
+                var download = new Download(metadata, state, torrent.percentDone, torrent.totalSize, torrent.id);
+                res[download.id] = download;
             }
-            info = info.join('-');
-
-            var metadata;
-
-            switch (type) {
-                case 'movie':
-                    metadata = new DownloadInfo({
-                        tmdb: Number(info),
-                        type: 'movie',
-                    });
-                    break;
-                case 'show':
-                    var [id, seasonEpisode] = info.split('.');
-                    var regex = /S(?<season>\d+)(E(?<episode>\d+))?/;
-                    var regexRes = regex.exec(seasonEpisode);
-                    if (regexRes.groups.episode) {
-                        metadata = new DownloadInfo({
-                            tmdb: Number(id),
-                            type: 'show',
-                            season: Number(regexRes.groups.season),
-                            isFullSeason: false,
-                            episode: Number(regexRes.groups.episode),
-                        });
-                    } else {
-                        metadata = new DownloadInfo({
-                            tmdb: Number(id),
-                            type: 'show',
-                            season: Number(regexRes.groups.season),
-                            isFullSeason: true,
-                        });
-                    }
-                    break;
-            }
-
-            var trState = this.transmission.torrentState(torrent.status);
-
-            var state;
-            switch (trState) {
-                case 'check-queue':
-                case 'checking-files':
-                case 'stopped':
-                case 'waiting':
-                    state = 'paused';
-                    break;
-                case 'downloading':
-                    state = 'downloading';
-                    break;
-                case 'seed-queue':
-                case 'seeding':
-                    state = 'seeding';
-                    break;
-            }
-
-            var download = new Download(metadata, state, torrent.percentDone, torrent.totalSize, torrent.id);
-            res[download.id] = download;
         }
 
         return res;

@@ -231,11 +231,13 @@ export default {
                 return;
             }
 
+            var year = new Date(this.showDetails.data.first_air_date).getFullYear();
+
             var info = new DownloadInfo({
                 tmdb: this.showID,
                 type: 'show',
                 title: this.showDetails.data.name,
-                year: this.year,
+                year: year,
                 season: this.seasonNumber,
                 isFullSeason: true,
             });
@@ -248,11 +250,13 @@ export default {
                 return;
             }
 
+            var year = new Date(this.showDetails.data.first_air_date).getFullYear();
+
             var info = new DownloadInfo({
                 tmdb: this.showID,
                 type: 'show',
                 title: this.showDetails.data.name,
-                year: this.year,
+                year: year,
                 season: this.seasonNumber,
                 isFullSeason: false,
                 episode: episodeNumber,
