@@ -21,7 +21,7 @@
                 </p>
                 <p class="text-justify">{{ movieDetails.data.overview }}</p>
                 <div class="row">
-                    <div class="col-12 col-lg-6 mt-3">
+                    <div class="col-12 col-lg-7 mt-3">
                         <YoutubeLink
                             v-if="trailer"
                             class="mx-1"
@@ -38,17 +38,25 @@
                             class="mx-1"
                             :id="movieDetails.data.imdb_id"
                         />
+                        <RarbgLink
+                            v-if="movieDetails.data.imdb_id"
+                            class="mx-1"
+                            :id="movieDetails.data.imdb_id"
+                            type="movie"
+                        />
 
                         <div class="col-12 mt-3 p-0">
                             <CustomMagnet :click="downloadTorrent" />
                         </div>
                     </div>
-                    <BestTorrent
-                        v-on:download="downloadTorrent"
-                        v-on:reload="reloadTorrents"
-                        :torrents="torrents"
-                        :reloadinEnabled="true"
-                    />
+                    <div class="col-12 col-lg-5 mt-3">
+                        <BestTorrent
+                            v-on:download="downloadTorrent"
+                            v-on:reload="reloadTorrents"
+                            :torrents="torrents"
+                            :reloadinEnabled="true"
+                        />
+                    </div>
                 </div>
                 <hr />
                 <div>
@@ -81,6 +89,7 @@ import TMDBLink from './TMDBLink.vue';
 import TorrentList from './TorrentList.vue';
 import YoutubeLink from './YoutubeLink.vue';
 import CustomMagnet from './CustomMagnet.vue';
+import RarbgLink from './RarbgLink.vue';
 
 export default {
     name: 'MovieInfo',
@@ -93,6 +102,7 @@ export default {
         BestTorrent,
         TorrentList,
         CustomMagnet,
+        RarbgLink,
     },
     props: {
         id: {

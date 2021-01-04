@@ -1,5 +1,5 @@
 <template>
-    <div class="col-12 col-lg-6 mt-3 text-center">
+    <div class="w-100 text-center">
         <div v-if="torrents === null" class="font-weight-bold">
             Searching torrents...
             <LoadingSpinner class="mt-1" />

@@ -21,6 +21,12 @@
                 />
                 <TMDBLink class="mx-1" type="tv" :id="id" />
                 <IMDBLink v-if="imdbID" class="mx-1" :id="imdbID" />
+                <RarbgLink
+                    v-if="imdbID"
+                    class="mx-1"
+                    :id="imdbID"
+                    type="show"
+                />
             </div>
 
             <div class="col-12">
@@ -56,6 +62,7 @@ import HorizontalScroll from './HorizontalScroll.vue';
 import IMDBLink from './IMDBLink.vue';
 import LoadingSpinner from './LoadingSpinner.vue';
 import MediaQuery from './MediaQuery.vue';
+import RarbgLink from './RarbgLink.vue';
 import SeasonThumb from './SeasonThumb.vue';
 import ShowThumb from './ShowThumb.vue';
 import TMDBLink from './TMDBLink.vue';
@@ -73,6 +80,7 @@ export default {
         SeasonThumb,
         HorizontalScroll,
         LoadingSpinner,
+        RarbgLink,
     },
     props: {
         id: {
