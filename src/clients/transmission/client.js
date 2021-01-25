@@ -41,11 +41,11 @@ class TransmissionClient extends Client {
         this.fireUpdate();
     }
 
-    fireUpdate() {
+    async fireUpdate() {
         if (this.alive) {
-            this.updateTorrents()
-                .then(new Promise(r => setTimeout(r, 2 * 1000))
-                    .then(() => this.fireUpdate()))
+            await this.updateTorrents();
+            await new Promise(r => setTimeout(r, 2 * 1000));
+            this.fireUpdate();
         }
     }
 
