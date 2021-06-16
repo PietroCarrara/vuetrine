@@ -1,5 +1,5 @@
 <template>
-    <div class="rounded lifted mini-card">
+    <div class="rounded lifted mini-card bg-scnd">
         <slot />
     </div>
 </template>

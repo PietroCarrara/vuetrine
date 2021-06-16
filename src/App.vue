@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <nav class="lifted main-nav navbar navbar-expand-lg navbar-dark">
             <router-link to="/" class="navbar-brand">
                 <SiteLogo />
             </router-link>
@@ -35,18 +35,18 @@
                 >
                     <input
                         v-model="searchName"
-                        class="form-control mr-sm-2"
+                        class="input-scnd form-control mr-sm-2"
                         type="search"
                         placeholder="Search"
                         aria-label="Search"
                     />
-                    <button class="btn btn-outline-success my-2 my-sm-0" type>
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="button">
                         Search
                     </button>
                 </form>
             </div>
         </nav>
-        <div class="container py-4">
+        <div class="py-4 px-3">
             <router-view />
         </div>
     </div>
@@ -90,6 +90,49 @@ export default {
 
 <style>
 .lifted {
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.75);
+    box-shadow: 0 4px 8px 0 black;
+    /* box-shadow: 0 8px 16px 0 black; */
+}
+
+:root {
+    --main-bg-color: #42414d;
+    --scnd-bg-color: #1c1b22;
+
+    --main-text-color: white;
+    --mute-text-color: rgb(175, 175, 175);
+}
+
+select, input, input:focus {
+    background: var(--scnd-bg-color) !important;
+    color: var(--main-text-color) !important;
+}
+input::placeholder {
+    color: var(--mute-text-color) !important;
+}
+
+body {
+    background-color: var(--main-bg-color);
+    color: var(--main-text-color);
+}
+
+a, a:hover {
+    color: var(--main-text-color);
+}
+
+.main-nav {
+    box-shadow: 0 0px 8px 0 black;
+    background-color: var(--scnd-bg-color);
+}
+
+.select-scnd, .input-scnd, .input-scnd:focus {
+    background-color: var(--main-bg-color) !important;
+}
+
+.bg-scnd {
+    background-color: var(--scnd-bg-color);
+}
+
+.text-muted {
+    color: var(--mute-text-color) !important;
 }
 </style>

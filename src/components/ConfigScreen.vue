@@ -3,7 +3,7 @@
         <div class="col-12 text-center h2"><SiteLogo /> configuration</div>
         <div class="col-12 col-md-3 my-2">
             <div class="text-center font-weight-bold">TheMovieDB</div>
-            <div class="card">
+            <div class="card bg-scnd lifted">
                 <div class="card-body">
                     <form>
                         <div class="form-group">
@@ -12,7 +12,7 @@
                                 id="tmdb-key"
                                 v-model="tmdbKey"
                                 type="text"
-                                class="form-control"
+                                class="form-control input-scnd"
                                 placeholder="Enter your key"
                             />
                             <small class="form-text text-muted">
@@ -30,7 +30,7 @@
         </div>
         <div class="col-12 col-md-6 my-2">
             <div class="text-center font-weight-bold">Download Client</div>
-            <div class="card">
+            <div class="card bg-scnd lifted">
                 <div class="card-body">
                     <form>
                         <div class="form-group">
@@ -40,7 +40,7 @@
                             <select
                                 id="selected-client"
                                 v-model="selectedClient"
-                                class="form-control"
+                                class="form-control select-scnd"
                             >
                                 <option disabled value="">
                                     Select a client
@@ -76,7 +76,7 @@
         </div>
         <div class="col-12 col-md-3 my-2">
             <div class="text-center font-weight-bold">Torrent Provider</div>
-            <div class="card">
+            <div class="card bg-scnd lifted">
                 <div class="card-body">
                     <form>
                         <div class="form-group">
@@ -86,7 +86,7 @@
                             <select
                                 id="selected-movie-provider"
                                 v-model="selectedMovieProvider"
-                                class="form-control"
+                                class="form-control select-scnd"
                             >
                                 <option disabled value="">
                                     Select a provider
@@ -126,7 +126,7 @@
                             <select
                                 id="selected-show-provider"
                                 v-model="selectedShowProvider"
-                                class="form-control"
+                                class="form-control select-scnd"
                             >
                                 <option disabled value="">
                                     Select a provider

@@ -29,8 +29,8 @@ export default {
     height: 64px;
     margin: 8px;
     border-radius: 50%;
-    border: 6px solid #000;
-    border-color: #000 transparent #000 transparent;
+    border: 6px solid var(--main-text-color);
+    border-color: var(--main-text-color) transparent var(--main-text-color) transparent;
     animation: lds-dual-ring 1.2s linear infinite;
 }
 @keyframes lds-dual-ring {

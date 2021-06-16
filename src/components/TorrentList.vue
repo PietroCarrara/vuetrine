@@ -75,7 +75,7 @@ export default {
 
 <style scoped>
 .striped:nth-child(even) {
-    background-color: #f8f9fa;
+    background-color: var(--scnd-bg-color);
 }
 .torrent-info {
     width: 6em;

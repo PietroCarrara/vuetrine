@@ -7,7 +7,7 @@
                     id="transmission-host"
                     v-model="transmissionHost"
                     type="text"
-                    class="form-control"
+                    class="form-control input-scnd"
                     placeholder="Enter the address to the transmission daemon"
                 />
             </div>
@@ -17,7 +17,7 @@
                     id="transmission-host"
                     v-model.number="transmissionPort"
                     type="number"
-                    class="form-control"
+                    class="form-control input-scnd"
                     placeholder="Enter the port number the daemon is listening on"
                 />
             </div>
@@ -27,7 +27,7 @@
                     id="transmission-host"
                     v-model="transmissionRoot"
                     type="text"
-                    class="form-control"
+                    class="form-control input-scnd"
                     placeholder="Enter the root path for the RPC"
                 />
             </div>

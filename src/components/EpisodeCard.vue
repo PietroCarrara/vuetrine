@@ -1,5 +1,5 @@
 <template>
-    <div class="row lifted rounded">
+    <div class="bg-scnd row lifted rounded">
         <div class="col-4 no-gutters p-0">
             <img
                 v-if="poster"
@@ -99,9 +99,8 @@ export default {
 }
 
 .btn-selected {
-    color: #fff;
-    background-color: #000;
-    border-color: #000;
+    background-color: var(--main-bg-color);
+    border-color: var(--main-bg-color);
     border-radius: 0rem 0.25rem 0rem 0rem;
 }
 
