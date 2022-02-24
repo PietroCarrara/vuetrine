@@ -130,11 +130,10 @@ export default {
             return `S${season}E${episode}`;
         },
         poster() {
-            if (this.seasonDetails.loading) {
-                return '';
+            if (!this.seasonDetails.loading && this.seasonDetails.data.poster_path) {
+                return this.$root.tmdb.common.getImageUrl(this.seasonDetails.data.poster_path, 'w500');
             }
-
-            return this.$root.tmdb.common.getImageUrl(this.seasonDetails.data.poster_path, 'w500');
+            return '';
         },
     },
     methods: {
